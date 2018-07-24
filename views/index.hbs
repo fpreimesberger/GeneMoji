@@ -1,0 +1,13 @@
+<head>
+  <link rel='stylesheet' href='../stylesheets/index_style.css' />
+</head>
+<h1>{{title}}</h1>
+
+
+<!-- toggle display depending on logged in or not  -->
+{{# if currentUserId}}
+<p>You're logged in as {{currentUserId}}</p> <!-- change to username?? -->
+{{else}}
+<a href='../users/new'<p>Make an account</p></a>
+<a href='../login'><p>Login</p></a>
+{{/if}}
