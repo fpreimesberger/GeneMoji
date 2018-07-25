@@ -48,7 +48,7 @@ router.get('/callback', (req, res, next) => {
       'grant_type': 'authorization_code',//process.env.GRANT_TYPE,//'authorization_code',
       'code': req.query.code,
       'redirect_uri': process.env.REDIRECT_URI,
-      'scope': 'email'
+      'scope': 'basic'
     },
     json: true,
   };
@@ -56,6 +56,8 @@ router.get('/callback', (req, res, next) => {
   const UpdatedUserSchema = new Schema({
     // username: { type: String, required: true },
     // password: { type: String, required: true },
+    firstname: { type: String, required: false },
+    lastname: { type: String, required: false },
     // optionals
     email: {type: String, required: false}
   });
@@ -75,21 +77,22 @@ router.get('/callback', (req, res, next) => {
       // GET from API -
         var getData = {
           uri: 'https://api.23andme.com/3/account/',
-          // headers: {Authorization: 'Bearer' + body.access_token},
-          headers: {Authorization: 'Bearer demo_oauth_token'},
+          headers: {Authorization: 'Bearer ' + body.access_token},
+          // headers: {Authorization: 'Bearer demo_oauth_token'},
           json: true };// Automatically parses the JSON string in the response
         rp(getData)
           .then(function(output) {
             console.log('GET worked');
-            console.log(output['data'][0]['email']);
 
             var updatedUser = mongoose.model('updatedUser', UpdatedUserSchema);
             // find user by id and add email to database
             var newUser = updatedUser({
+              firstname: output['data'][0]['first_name'],
+              lastname: output['data'][0]['last_name'],
               email: output['data'][0]['email']
             })
             newUser.save();
-            console.log('saved?');
+            console.log('saved' + newUser);
 
           })
         })
