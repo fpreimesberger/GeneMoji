@@ -8,7 +8,7 @@ require('dotenv').config();
 process.env['NODE_ENV'] = 'production'; // is this okay
 console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
 console.log(process.env.CLIENT_ID);
-console.log(process.env.GRANT_TYPE);
+// console.log(process.env.GRANT_TYPE);
 
 var app = express();
 

@@ -8,7 +8,8 @@ var rp = require('request-promise');
 router.get('/', function(req, res, next) {
   const currentUserId = req.session.userId;
   const currentUsername = req.session.username;
-  console.log(currentUsername);
+  console.log("username:");
+  console.log(JSON.stringify(currentUsername));
   res.render('index', { title: 'GeneMoji', currentUserId: currentUserId, currentUsername: currentUsername });
 });
 
@@ -32,11 +33,12 @@ router.post('/login', (req, res, next) => {
   });
 });
 
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+// get token after user connects their 23andMe acct
 router.get('/callback', (req, res, next) => {
-  console.log(req.query['code']);
  // CHANGE SCOPE
-
-
   var options = {
     method: 'POST',
     uri: 'https://api.23andme.com/token/',
@@ -46,70 +48,56 @@ router.get('/callback', (req, res, next) => {
       'grant_type': 'authorization_code',//process.env.GRANT_TYPE,//'authorization_code',
       'code': req.query.code,
       'redirect_uri': process.env.REDIRECT_URI,
-      'scope': 'basic'
+      'scope': 'email'
     },
     json: true,
   };
 
+  const UpdatedUserSchema = new Schema({
+    // username: { type: String, required: true },
+    // password: { type: String, required: true },
+    // optionals
+    email: {type: String, required: false}
+  });
 
-if (!req.query.code) {
-  console.log('error with code');
-} else { // POST to API with request-promise
-  console.log('attempting to post for token');
-  rp(options)
-    .then(function(body) {
-      console.log('it worked');
-      console.log(body);
-      // res.redirect('/callback'+token, {token: body});
-    })
-    .catch(function(err) {
-      console.log(err);
-      res.redirect('/error'); //{error:err}
-    })
-    console.log('access token');
-  // console.log(access_token);
-}
 
-  // myFunction().then(
-  //   do some stuff
-  // )
-  // .catch((err) => {
-  //   console.error(err)
-  // })
-//   exports.callback = function(req, res, scope){
-//     if (!req.query.code) {
-//         console.log('error with req.query.code');
-//         res.render('error', {
-//             client_id: process.env.CLIENT_ID,
-//             scope: scope,
-//             redirect_uri: process.env.REDIRECT_URI
-//         });
-//     } else {
-//         // Exchange the code for a token,
-//         // store it in the session, and redirect.
-//         console.log('attempting to get token');
-//         request.post({
-//             url: 'https://api.23andme.com/token/',
-//             form: {
-//                 client_id: process.env.CLIENT_ID,
-//                 client_secret: process.env.CLIENT_SECRET,
-//                 grant_type: 'authorization_code',
-//                 code: req.query.code,
-//                 redirect_uri: process.env.REDIRECT_URI,
-//                 scope: scope
-//             },
-//             json: true }, function(e, r, body) {
-//                 if (!e && r.statusCode == 200) {
-//                     res.cookie('access_token', body.access_token, {signed: true});
-//                     res.redirect('/');
-//                 } else {
-//                     res.send(body);
-//                 }
-//             });
-//           console.log('access token');
-//           console.log(access_token);
-//     }
-// };
+// POST to API with request-promise, receive auth token and redirect
+  if (!req.query.code) {
+    console.log('error with code');
+  } else {
+    console.log('attempting to post for token');
+    rp(options)
+      .then(function(body) {
+        console.log('it worked');
+        console.log(body);
+        console.log(body.access_token);
+        // res.render('/callback', {token: body.access_token}); // changed from res.redirect
+      // GET from API -
+        var getData = {
+          uri: 'https://api.23andme.com/3/account/',
+          // headers: {Authorization: 'Bearer' + body.access_token},
+          headers: {Authorization: 'Bearer demo_oauth_token'},
+          json: true };// Automatically parses the JSON string in the response
+        rp(getData)
+          .then(function(output) {
+            console.log('GET worked');
+            console.log(output['data'][0]['email']);
+
+            var updatedUser = mongoose.model('updatedUser', UpdatedUserSchema);
+            // find user by id and add email to database
+            var newUser = updatedUser({
+              email: output['data'][0]['email']
+            })
+            newUser.save();
+            console.log('saved?');
+
+          })
+        })
+      .catch(function(err) {
+        console.log(err);
+        res.redirect('/error'); //{error:err}
+      });
+  }
 })
 
 module.exports = router;

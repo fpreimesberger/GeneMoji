@@ -2,7 +2,21 @@ body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
-
+/* 
 a {
   color: #00B7FF;
+} */
+
+p {
+   font-family: 'NowRegular';
+   font-weight: normal;
+   font-style: normal;
+   font-size: 25px;
+}
+h2 {
+  font-family: 'NowRegular';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 35px;
+  text-align: center;
 }
