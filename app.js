@@ -4,9 +4,15 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+require('dotenv').config();
+process.env['NODE_ENV'] = 'production'; // is this okay
+console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+console.log(process.env.CLIENT_ID);
+console.log(process.env.GRANT_TYPE);
+
 var app = express();
 
-// configure sessions
+// configure sessions - logged in for an hour?
 const session = require('express-session');
 app.use(session({ secret: 'secret-unique-code', cookie: { maxAge: 3600000 }, resave: true, saveUninitialized: true }));
 
@@ -23,6 +29,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+console.log(process.env.CLIENT_ID)
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
