@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const User = require('../models/user');
+var Bluebird = require('bluebird');
 var request = require('request');
 var rp = require('request-promise');
 const mongoose = require('mongoose');
@@ -16,7 +17,8 @@ const UpdatedUserSchema = new Schema({
   gender: {type: String, required: false},
   age: {type: String, required: false },
   ethnicity: { type: String, required: false },
-  pred_bmi: { type: String, required: false }
+  pred_bmi: { type: String, required: false },
+  eyecolor: { type: String, required: false }
 });
 
 // landing page
@@ -48,46 +50,75 @@ router.post('/login', (req, res, next) => {
   });
 });
 
+// messss
 function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
   var sex = '';
   var age = '';
   var model_ethnicity = '';
   var predicted_bmi = '';
+  var eye_color = '';
   // genetic_weight -> sex, age, model_ethc, pred_bmi
   var geneticWeightReq = {
-    uri: 'https://api.23andme.com/3/profile/'+id+'/report/genetic_weight/',// + id + '/sex/ ',
+    uri: `https://api.23andme.com/3/profile/${id}/report/genetic_weight/`,// + id + '/sex/ ',
     headers: {Authorization: 'Bearer ' + token},
     json: true, };
+  // eye color
+  var eyeColorReq = { // rs12913832; AA --> brown
+    uri: `https://api.23andme.com/3/profile/${id}/marker/rs12913832/`,
+    headers: {Authorization: 'Bearer ' + token},
+    json: true, };
+
+
+    // move later
+  // var updatedUser = mongoose.model('updatedUser', UpdatedUserSchema);
+  // var newUser = updatedUser({
+  //     firstname: first_name,
+  //     lastname: last_name,
+  //     email: e_mail,
+  //     acctid: acct_id,
+  //     gender: sex,
+  //     age: age,
+  //     ethnicity: model_ethnicity,
+  //     predicted_bmi: bmi
+  //   });
+  // newUser.save();
+  // console.log('saved' + newUser);
+
   rp(geneticWeightReq)
     .then(function(body) {
       console.log('genetic weight got');
       console.log(JSON.stringify(body));
       console.log(body['details']['model_inputs']['sex']); // change from model_input later
-      sex = body['details']['model_inputs']['sex'];
-      age = body['details']['model_inputs']['age'];
-      model_ethnicity = body['details']['model_inputs']['model_ethnicity'];
-      bmi = body['summary']['predicted_bmi'];
-      console.log(sex, age, model_ethnicity, bmi);
+      // sex = body['details']['model_inputs']['sex'];
+      // age = body['details']['model_inputs']['age'];
+      // model_ethnicity = body['details']['model_inputs']['model_ethnicity'];
+      // bmi = body['summary']['predicted_bmi'];
+      // console.log(eyecolor['variants'][0]['allele'], eyecolor['variants'][1]['allele']);
+      //
+      rp(eyeColorReq)
+        .then(function(eyecolorBody) { // determine eye color
+          if ( eyecolorBody['variants'][0]['allele'] == "A" ) {
+            eye_color = 'brown';
+          } else if ( eyecolorBody['variants'][1]['allele']  == "A" ) {
+            eye_color = 'brown';
+          } else {
+            eye_color = 'blue';
+          }
+          console.log(`eye color: ${eye_color}`);
+        })
 
-      var updatedUser = mongoose.model('updatedUser', UpdatedUserSchema);
-      var newUser = updatedUser({
-        firstname: first_name,
-        lastname: last_name,
-        email: e_mail,
-        acctid: acct_id,
-        gender: sex,
-        age: age,
-        ethnicity: model_ethnicity,
-        predicted_bmi: bmi
-      });
-      newUser.save();
-      console.log('saved' + newUser);
+        // .catch(function(err) {
+        //   console.log('eye color request failed - SNP rs12913832');
+        // })
+
+      //
 
     })
+
     .catch(function(err) {
       console.log(err);
     })
-
+    console.log(eye_color);
 }
 
 // get token after user connects their 23andMe acct
