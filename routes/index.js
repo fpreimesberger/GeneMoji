@@ -57,9 +57,10 @@ function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
   var model_ethnicity = '';
   var predicted_bmi = '';
   var eye_color = '';
+  var hair_color = 'test';
   // genetic_weight -> sex, age, model_ethc, pred_bmi
   var geneticWeightReq = {
-    uri: `https://api.23andme.com/3/profile/${id}/report/genetic_weight/`,// + id + '/sex/ ',
+    uri: `https://api.23andme.com/3/profile/${id}/report/genetic_weight/`, // + id + '/sex/ ',
     headers: {Authorization: 'Bearer ' + token},
     json: true, };
   // eye color
@@ -67,7 +68,10 @@ function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
     uri: `https://api.23andme.com/3/profile/${id}/marker/rs12913832/`,
     headers: {Authorization: 'Bearer ' + token},
     json: true, };
-
+  // hair color
+  var blackHairUris = [`https://api.23andme.com/3/profile/${id}/marker/rs12913832/`, `https://api.23andme.com/3/profile/${id}/marker/rs28777/`]; // array of uris for blach hair
+  var redHairUris = [`https://api.23andme.com/3/profile/${id}/marker/rs1805007/`, `https://api.23andme.com/3/profile/${id}/marker/rs1805008/`, `https://api.23andme.com/3/profile/${id}/marker/rs11547464/`];
+  var blondeHairUris = [`https://api.23andme.com/3/profile/${id}/marker/rs35264875/`, `https://api.23andme.com/3/profile/${id}/marker/rs1129038/`, `https://api.23andme.com/3/profile/${id}/marker/rs7495174/`, `https://api.23andme.com/3/profile/${id}/marker/rs4778138/`];
 
     // move later
   // var updatedUser = mongoose.model('updatedUser', UpdatedUserSchema);
@@ -95,6 +99,8 @@ function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
       // bmi = body['summary']['predicted_bmi'];
       // console.log(eyecolor['variants'][0]['allele'], eyecolor['variants'][1]['allele']);
       //
+
+      // if over half Asian or African, eyes are brown and hair is black. else -->
       rp(eyeColorReq)
         .then(function(eyecolorBody) { // determine eye color
           if ( eyecolorBody['variants'][0]['allele'] == "A" ) {
@@ -107,18 +113,136 @@ function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
           console.log(`eye color: ${eye_color}`);
         })
 
-        // .catch(function(err) {
-        //   console.log('eye color request failed - SNP rs12913832');
-        // })
+      // black hair ??
+      rp( {
+        uri: blackHairUris[0],
+        headers: {Authorization: 'Bearer ' + token},
+        json: true,
+      }).then(function(blackHair0) {
+        if (blackHair0['variants'][0]['allele'] == "A" && blackHair0['variants'][1]['allele'] == "A" ) {
+          hair_color = 'black';
+          console.log('hair is black');
+        } else {
+        rp( {
+          uri: blackHairUris[1],
+          headers: {Authorization: 'Bearer ' + token},
+          json: true,
+        }).then(function(blackHair1) {
+          if (blackHair0['variants'][0]['allele'] == "C" && blackHair0['variants'][1]['allele'] == "C" ) {
+            hair_color = 'black';
+            console.log('hair is black');
+          }
+          // else --> hair not black
+          console.log('hair is not black');
+              });
 
-      //
+            }
+          })
+        // if not black, check for red
+      if ( hair_color != 'black') {
+        rp( {
+          uri: redHairUris[0],
+          headers: {Authorization: 'Bearer ' + token},
+          json: true,
+        }).then(function(redHair0) {
+          if (redHair0['variants'][0]['allele'] == "T" && redHair0['variants'][1]['allele'] == "T") {
+            hair_color = 'red';
+            console.log('hair is red');
+          } else {
+            rp( {
+              uri: redHairUris[1],
+              headers: {Authorization: 'Bearer ' + token},
+              json: true,
+            }).then(function(redHair1) {
+              if (redHair1['variants'][0]['allele'] == "T" && redHair1['variants'][1]['allele'] == "T") {
+                hair_color = 'red';
+                console.log('hair is red');
+              } else {
+                rp( {
+                  uri: redHairUris[2],
+                  headers: {Authorization: 'Bearer ' + token},
+                  json: true,
+                }).then (function(redHair2) {
+                  if (redHair2['variants'][0]['allele'] == "A" && redHair2['variants'][1]['allele'] == "A") {
+                    hair_color = 'red';
+                    console.log('hair is red');
+                  } else {
+                    console.log('hair is not red');
+                  }
+                })
+              }
+            })
+          }
+        })
+      // if not red check for blonde
+      }
+      if (hair_color != 'red' && hair_color != 'black') {
+        rp( {
+          uri: blondeHairUris[0],
+          headers: {Authorization: 'Bearer ' + token},
+          json: true,
+        }).then(function(blondeHair0) {
+          if (blondeHair0['variants'][0]['allele'] == "T" && blondeHair0['variants'][1]['allele'] == "T") {
+            hair_color = 'blonde';
+            console.log('hair is blonde');
+          } else {
+            rp( {
+              uri: blondeHairUris[1],
+              headers: {Authorization: 'Bearer ' + token},
+              json: true,
+            }).then(function(blondeHair1) {
+              if (blondeHair1['variants'][0]['allele'] == "T" && blondeHair1['variants'][1]['allele'] == "T") {
+                hair_color = 'blonde';
+                console.log('hair is blonde');
+              } else {
+                rp( {
+                  uri: blondeHairUris[2],
+                  headers: {Authorization: 'Bearer ' + token},
+                  json: true,
+                }).then(function(blondeHair2) {
+                  if (blondeHair2['variants'][0]['allele'] == "A" && blondeHair2['variants'][1]['allele'] == "A") {
+                    hair_color = 'blonde';
+                    console.log('hair is blonde');
+                  } else {
+                    rp( {
+                      uri: blondeHairUris[3],
+                      headers: {Authorization: 'Bearer ' + token},
+                      json: true,
+                    }).then(function(blondeHair3) {
+                      if (blondeHair3['variants'][0]['allele'] == "A" && blondeHair3['variants'][1]['allele'] == "A") {
+                        console.log('hair is blonde');
+                        hair_color = 'blonde';
+                      } else {
+                        console.log('hair is not blonde');
+                        hair_color = 'brown';
+                        console.log('hair is brown');
+                      }
+                    })
+                  }
+                })
+              }
+            })
+          }
+        })
+      }
+      console.log(hair_color);
 
-    })
 
-    .catch(function(err) {
-      console.log(err);
-    })
+
+
+
+
+
+    // .catch(function(err) {
+    //   console.log(err);
+    // })
+
+
+
     console.log(eye_color);
+
+// good
+})
 }
 
 // get token after user connects their 23andMe acct
@@ -148,33 +272,19 @@ router.get('/callback', (req, res, next) => {
       .then(function(body) {
         console.log('it worked');
         console.log(body);
-        console.log(body.access_token);
         // res.render('/callback', {token: body.access_token}); // changed from res.redirect
 
       // GET from API -
         var getData = {
           uri: 'https://api.23andme.com/3/account/',
-          headers: {Authorization: 'Bearer ' + body.access_token},
-          // headers: {Authorization: 'Bearer demo_oauth_token'}, // DEMO ONLY
+          // headers: {Authorization: 'Bearer ' + body.access_token},
+          headers: {Authorization: 'Bearer demo_oauth_token'}, // DEMO ONLY
           json: true };
         var userID = "";
         rp(getData)
           .then(function(output) {
             console.log('GET worked');
 
-
-
-          // var getAncestry = {
-          //   uri: 'https://api.23andme.com/1/ancestry/' + newUser.id + '/?threshold=0.9',
-          //   headers: {Authorization: 'Bearer ' + body.access_token},
-          //   // headers: {Authorization: 'Bearer demo_oauth_token'},
-          //   json: true };
-          //
-          // rp(getAncestry)
-          //   .then(function(output) {
-          //     console.log("ancestry: ");
-          //     console.log(output);
-          //   })
         // getInfo(body.access_token, newUser.acctid); What the fuck
         getInfo('demo_oauth_token', 'demo_profile_id', 'Erin', 'Mendel', 'shit@fuck.com', 'demo_profile_id');
         })
