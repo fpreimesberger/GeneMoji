@@ -57,7 +57,11 @@ function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
   var model_ethnicity = '';
   var predicted_bmi = '';
   var eye_color = '';
-  var hair_color = 'test';
+  var hair_color = '';
+  var hair_texture = '';
+  var has_freckles = '';
+
+  // REQUESTS
   // genetic_weight -> sex, age, model_ethc, pred_bmi
   var geneticWeightReq = {
     uri: `https://api.23andme.com/3/profile/${id}/report/genetic_weight/`, // + id + '/sex/ ',
@@ -72,6 +76,8 @@ function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
   var blackHairUris = [`https://api.23andme.com/3/profile/${id}/marker/rs12913832/`, `https://api.23andme.com/3/profile/${id}/marker/rs28777/`]; // array of uris for blach hair
   var redHairUris = [`https://api.23andme.com/3/profile/${id}/marker/rs1805007/`, `https://api.23andme.com/3/profile/${id}/marker/rs1805008/`, `https://api.23andme.com/3/profile/${id}/marker/rs11547464/`];
   var blondeHairUris = [`https://api.23andme.com/3/profile/${id}/marker/rs35264875/`, `https://api.23andme.com/3/profile/${id}/marker/rs1129038/`, `https://api.23andme.com/3/profile/${id}/marker/rs7495174/`, `https://api.23andme.com/3/profile/${id}/marker/rs4778138/`];
+  var curlyHairUris = [`https://api.23andme.com/3/profile/${id}/marker/rs17646946/`, `https://api.23andme.com/3/profile/${id}/marker/rs7349332/`, `https://api.23andme.com/3/profile/${id}/marker/rs11803731/`];
+  var frecklesUris = [`https://api.23andme.com/3/profile/${id}/marker/rs1015362/`, `https://api.23andme.com/3/profile/${id}/marker/rs2153271/`]
 
     // move later
   // var updatedUser = mongoose.model('updatedUser', UpdatedUserSchema);
@@ -225,9 +231,93 @@ function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
           }
         })
       }
-      console.log(hair_color);
+    console.log(hair_color);
+    var hair_curl_index = 0;
+    if (hair_curl_index === 0) {
+      rp({
+        uri: curlyHairUris[0],
+        headers: {Authorization: 'Bearer ' + token},
+        json: true,
+      }).then(function(curlyHair0) {
+        console.log(curlyHair0['variants'][0]['allele'], curlyHair0['variants'][1]['allele']);
+        console.log('GG');
+        if (curlyHair0['variants'][0]['allele'] == "G" && curlyHair0['variants'][1]['allele'] == "G") {
+          hair_curl_index+=2;
+        } else if (curlyHair0['variants'][0]['allele'] == "G" || curlyHair0['variants'][1]['allele'] == "G") {
+          hair_curl_index+=1;
+          console.log('whyyyyyyyyy');
+          console.log(hair_curl_index);
+        } })
+      rp({
+        uri: curlyHairUris[1],
+        headers: {Authorization: 'Bearer ' + token},
+        json: true,
+      }).then(function(curlyHair1) {
+        console.log(curlyHair1['variants'][0]['allele'], curlyHair1['variants'][1]['allele']);
+        console.log('TT');
+        if (curlyHair1['variants'][0]['allele'] == "T" && curlyHair1['variants'][1]['allele'] == "T") {
+          hair_curl_index+=2;
+        } else if (curlyHair1['variants'][0]['allele'] == "T" || curlyHair1['variants'][1]['allele'] == "T") {
+          hair_curl_index+=1;
+        }})
+      rp({
+        uri: curlyHairUris[2],
+        headers: {Authorization: 'Bearer ' + token},
+        json: true,
+        }).then(function(curlyHair2) {
+          console.log(curlyHair2['variants'][0]['allele'], curlyHair2['variants'][1]['allele']);
+          console.log('TT');
+          if (curlyHair2['variants'][0]['allele'] == "T" && curlyHair2['variants'][1]['allele'] == "T") {
+            hair_curl_index+=2;
+          } else if (curlyHair2['variants'][0]['allele'] == "T" || curlyHair2['variants'][1]['allele'] == "T") {
+            hair_curl_index+=1;
+          }
+        })
+    }
+    if (hair_curl_index < 3) {
+      hair_texture = 'straight';
+    } else if (hair_curl_index < 6) {
+      hair_texture = 'wavy';
+    } else {
+      hair_texture = 'curly';
+    }
+    console.log(`hair index ${hair_curl_index}`);
+    console.log(`hair texture ${hair_texture}`);
 
-
+    var freckling_index = 0;
+    rp({
+      uri: frecklesUris[0],
+      headers: {Authorization: 'Bearer ' + token},
+      json: true,
+    }).then(function(freckles0) {
+      console.log(freckles0['variants'][0]['allele'], freckles0['variants'][1]['allele']);
+      console.log('GG');
+      if (freckles0['variants'][0]['allele'] == "T" && freckles0['variants'][1]['allele'] == "T") {
+        freckling_index+=2;
+      } else if ( freckles0['variants'][0]['allele'] == "T" || freckles0['variants'][1]['allele'] == "T" ) {
+        freckling_index+=1;
+      }
+    })
+    rp({
+      uri: frecklesUris[1],
+      headers: {Authorization: 'Bearer ' + token},
+      json: true,
+    }).then(function(freckles1) {
+      console.log(freckles1['variants'][0]['allele'], freckles1['variants'][1]['allele']);
+      console.log('CC');
+      if (freckles1['variants'][0]['allele'] == "C" && freckles1['variants'][1]['allele'] == "C") {
+        freckling_index+=2;
+      } else if (freckles1['variants'][0]['allele'] == "C" || freckles1['variants'][1]['allele'] == "C") {
+        freckling_index+=1;
+      }
+    })
+    console.log(`freckling index ${freckling_index}`);
+    if ( freckling_index > 2 ) {
+      has_freckles = 'yes';
+    } else {
+      has_freckles = 'no';
+    }
+  console.log(`freckles ${has_freckles}`);
 
 
 
