@@ -1,16 +1,25 @@
 <head>
   <link rel='stylesheet' href='../stylesheets/index_style.css' />
+  <link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/gauge" type="text/css"/>
 </head>
 <script src="https://api.23andme.com/res/js/ttam-0.3.js"></script>
-<h1>{{title}}</h1>
 
+<body>
+<div class='myGrid'>
+  <div class='theHead'>
+    <h1>{{title}}</h1>
+  </div>
 
-<!-- toggle display depending on logged in or not  -->
-{{# if currentUserId}}
-<p>You're logged in as userID {{currentUserId}}</p> <!-- change to username?? -->
-<a href="https://api.23andme.com/authorize/?redirect_uri=http://localhost:3000/callback&response_type=code&client_id=3643dd20a884fef635d43c85b0dc66d0&scope=basic+email+names+report:all+genomes+ancestry+phenotypes:read:sex&select_profile=True rs123">Connect with 23andMe</a>
-<p>Your 23andMe account is connected as ..</p>
-{{else}}
-<a href='../users/new'><p>Make an account</p></a>
-<a href='../login'><p>Login</p></a>
-{{/if}}
+  <div class='second-container'>
+    <!-- toggle display depending on logged in or not  -->
+    {{# if currentUserId}}
+    <p>You're logged in as userID {{currentUserId}}</p> <!-- change to username?? -->
+    <a href="https://api.23andme.com/authorize/?redirect_uri=http://localhost:3000/callback&response_type=code&client_id=3643dd20a884fef635d43c85b0dc66d0&scope=basic+email+names+report:all+genomes+ancestry+phenotypes:read:sex&select_profile=True rs123">Connect with 23andMe</a>
+    <p>Your 23andMe account is connected as ..</p>
+    {{else}}
+    <a href='../users/new'><p>Make an account</p></a>
+    <a href='../login'><p>Login</p></a>
+    {{/if}}
+  </div>
+</div>
+</body>

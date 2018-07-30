@@ -1,3 +1,32 @@
+.myGrid {
+  display: grid;
+  grid-template-rows: 60px 1000px;
+  grid-template-columns: 100%;
+}
+body {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  margin: 0;
+  /* background-color: green; */
+}
+.theHead {
+  grid-row: 1;
+  grid-template-columns: 1/6;
+  /* background-color: red; */
+  padding: 0 0 0;
+  margin: 0 0 0;
+}
+.second-container {
+  grid-row: 2;
+  grid-template-columns: 1/6;
+  /* background-color: blue; */
+  padding: 0 0 0;
+  margin: 0 0 0;
+}
 h1 {
-
+  font-family: 'GaugeRegular';
+  font-weight: normal;
+  font-style: normal;
 }
