@@ -1,11 +1,40 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+.everything {
+  display: grid;
+  grid-template-rows: 60px 40px 300px 40px 200px 40px 150px 40px 300px;
+  grid-template-columns: 80px 200px 200px 80px;
 }
-/* 
-a {
-  color: #00B7FF;
-} */
+body {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  margin: 0;
+  /* background-color: green; */
+}
+.first-section {
+  grid-row: 1;
+  grid-columns: 1/-1;
+  /* background-color: red; */
+  height: 100%;
+  width: 100%;
+  padding: 0 20px 0;
+  margin: 0 0 0;
+  border: 2px black solid;
+}
+.second-container {
+  grid-row: 2/5;
+  grid-columns: 1/-1;
+  /* background-color: blue; */
+  padding: 0 0 0;
+  border: 2px black solid;
+  margin: 0 0 0;
+}
+h1 {
+  font-family: 'GaugeRegular';
+  font-weight: normal;
+  font-style: normal;
+}
+
 
 p {
    font-family: 'NowRegular';

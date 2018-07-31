@@ -1,7 +1,7 @@
-.myGrid {
+.everything {
   display: grid;
-  grid-template-rows: 60px 1000px;
-  grid-template-columns: 100%;
+  grid-template-rows: 60px 40px 300px 40px 200px 40px 150px 40px 300px;
+  grid-template-columns: 80px 200px 200px 80px;
 }
 body {
   width: 100%;
@@ -11,18 +11,22 @@ body {
   margin: 0;
   /* background-color: green; */
 }
-.theHead {
+.first-section {
   grid-row: 1;
-  grid-template-columns: 1/6;
+  grid-columns: 1/-1;
   /* background-color: red; */
-  padding: 0 0 0;
+  height: 100%;
+  width: 100%;
+  padding: 0 20px 0;
   margin: 0 0 0;
+  border: 2px black solid;
 }
 .second-container {
-  grid-row: 2;
-  grid-template-columns: 1/6;
-  /* background-color: blue; */
+  grid-row: 2/5;
+  grid-columns: 1/5;
+  background-color: blue;
   padding: 0 0 0;
+  border: 2px black solid;
   margin: 0 0 0;
 }
 h1 {

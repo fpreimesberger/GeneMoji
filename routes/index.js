@@ -5,6 +5,7 @@ var Bluebird = require('bluebird');
 var request = require('request');
 var rp = require('request-promise');
 const mongoose = require('mongoose');
+var async = require("async");
 const Schema = mongoose.Schema;
 
 const UpdatedUserSchema = new Schema({
@@ -53,7 +54,152 @@ router.post('/login', (req, res, next) => {
   });
 });
 
-// messss
+function retrieveAlleles(inputUri, token) {
+  output = '';
+  return rp({
+      uri: inputUri,
+      headers: {Authorization: 'Bearer ' + token},
+      json: true,
+    }).then((data) => {
+      var one = (data['variants'][0]['allele']);
+      var two = (data['variants'][1]['allele']);
+      return [one, two];
+    })}
+
+function getGeneticWeight(geneticWeightReq) {
+  var sex = 'a';
+  var a_ge = 'a';
+  var model_ethnicity = 'a';
+  var predicted_bmi = 'a';
+  return rp(geneticWeightReq)
+    .then(function(body) {
+   // change from model_input later
+      sex = body['details']['model_inputs']['sex'];
+      console.log(sex);
+      a_ge = body['details']['model_inputs']['age'];
+      model_ethnicity = body['details']['model_inputs']['model_ethnicity'];
+      predicted_bmi = body['summary']['predicted_bmi'];
+      // if over half Asian or African, eyes are brown and hair is black. else -->
+      return [sex, a_ge, model_ethnicity, predicted_bmi];
+    })
+};
+
+function getEyeColor(eyeColorReq) {
+  var color = '';
+  return rp(eyeColorReq)
+    .then(function(eyecolorBody) { // determine eye color
+      if ( eyecolorBody['variants'][0]['allele'] == "A" ) {
+        color = 'brown';
+      } else if ( eyecolorBody['variants'][1]['allele']  == "A" ) {
+        color = 'brown';
+      } else {
+        color = 'blue';
+      }
+      return color;
+    });
+};
+
+function getHair(hairUris, token) {
+  var hairFound = false;
+  var hairColor = ''; //default
+  var ans = ['A', 'C', 'T', 'T', 'A', 'T', 'T', 'A', 'A'];
+  var colors = ['black', 'black', 'red', 'red', 'red', 'blonde', 'blonde', 'blonde', 'blonde'];
+
+  var req0 = retrieveAlleles(hairUris[0], token);
+  var req1 = retrieveAlleles(hairUris[1], token);
+  var req2 = retrieveAlleles(hairUris[2], token);
+  var req3 = retrieveAlleles(hairUris[3], token);
+  var req4 = retrieveAlleles(hairUris[4], token);
+  var req5 = retrieveAlleles(hairUris[5], token);
+  var req6 = retrieveAlleles(hairUris[6], token);
+  var req7 = retrieveAlleles(hairUris[7], token);
+  var req8 = retrieveAlleles(hairUris[8], token);
+  return Promise.all([req0, req1, req2, req3, req4, req5, req6, req7, req8]).then(function(res) {
+    if (res[0][0] == ans[0] && res[0][1] == ans[0]) {
+        hairColor = 'black';
+      } else if (res[1][0] == ans[1] && res[1][1] == ans[1]) {
+        hairColor = 'black';
+      } else if (res[2][0] == ans[2] && res[2][1] == ans[2]) {
+        hairColor = 'red';
+      } else if (res[3][0] == ans[3] && res[3][1] == ans[3]) {
+        hairColor = 'red';
+      } else if (res[4][0] == ans[4] && res[4][1] == ans[4]) {
+        hairColor = 'red';
+      } else if (res[5][0] == ans[5] && res[5][1] == ans[5]) {
+        hairColor = 'blonde';
+      } else if (res[6][0] == ans[6] && res[6][1] == ans[6]) {
+        hairColor = 'blonde';
+      } else if (res[7][0] == ans[7] && res[7][1] == ans[7]) {
+        hairColor = 'blonde';
+      } else if (res[8][0] == ans[8] && res[8][1] == ans[8]) {
+        hairColor = 'blonde';
+      } else {
+        hairColor = 'brown';
+      }
+  }).then( data => {
+    return hairColor;
+  })}
+
+function getHairTexture(curlyHairUris, token) {
+  var hair_curl_index = 0;
+  var ans = ['G', 'T', 'T'];
+  var hairTexture = '';
+
+  var req0 = retrieveAlleles(curlyHairUris[0], token);
+  var req1 = retrieveAlleles(curlyHairUris[1], token);
+  var req2 = retrieveAlleles(curlyHairUris[2], token);
+  return Promise.all([req0, req1, req2]).then(function(res) {
+    console.log(`hair res ${res}`);
+    if (res[0][0] == ans[0] && res[0][1] == ans[0]) {
+        hair_curl_index+=2;
+      } else if (res[0][0] == ans[0] || res[0][1] == ans[0]) {
+        hair_curl_index++;
+      }
+    if (res[1][0] == ans[1] && res[1][1] == ans[1]) {
+        hair_curl_index+=2;
+      } else if (res[1][0] == ans[1] || res[1][1] == ans[1]) {
+        hair_curl_index++;
+      }
+    if (res[2][0] == ans[2] && res[2][1] == ans[2]) {
+        hair_curl_index+=2;
+      } else if (res[2][0] == ans[2] || res[2][1] == ans[2]) {
+        hair_curl_index++;
+      }
+      return hair_curl_index;
+  }).then(data => {
+    console.log(`hair curl index is ${hair_curl_index}`);
+    if (hair_curl_index > 2) {
+      hairTexture = 'wavy';
+    } else {
+      hairTexture = 'straight';
+    }
+    return hairTexture;
+  })
+}
+
+function getFrecklingIndex(frecklesUris, token) {
+  var freckling_index = 0;
+  var has_freckles = '';
+  var ans = ['T', 'C'];
+
+  var req1 = retrieveAlleles(frecklesUris[0], token);
+  var req2 = retrieveAlleles(frecklesUris[1], token);
+  return Promise.all([req1, req1]).then(function(res) {
+    if (res[0][0] == ans[0] && res[0][1] == ans[0]) {
+        freckling_index+=2;
+      } else if (res[0][0] == ans[0] || res[0][1] == ans[0]) {
+        freckling_index++;
+      }
+    if (res[1][0] == ans[0] && res[1][1] == ans[0]) {
+        freckling_index+=2;
+      } else if (res[1][0] == ans[0] || res[1][1] == ans[0]) {
+        freckling_index++;
+      }
+    return freckling_index;
+  }).then( data => {
+    return freckling_index;
+  })}
+
 function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
   var sex = '';
   var a_ge = '';
@@ -64,7 +210,7 @@ function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
   var hair_texture = '';
   var has_freckles = '';
 
-  // REQUESTS
+// REQUESTS
   var geneticWeightReq = {
     uri: `https://api.23andme.com/3/profile/${id}/report/genetic_weight/`, // + id + '/sex/ ',
     headers: {Authorization: 'Bearer ' + token},
@@ -73,235 +219,54 @@ function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
     uri: `https://api.23andme.com/3/profile/${id}/marker/rs12913832/`,
     headers: {Authorization: 'Bearer ' + token},
     json: true, };
-  var blackHairUris = [`https://api.23andme.com/3/profile/${id}/marker/rs12913832/`, `https://api.23andme.com/3/profile/${id}/marker/rs28777/`]; // array of uris for blach hair
-  var redHairUris = [`https://api.23andme.com/3/profile/${id}/marker/rs1805007/`, `https://api.23andme.com/3/profile/${id}/marker/rs1805008/`, `https://api.23andme.com/3/profile/${id}/marker/rs11547464/`];
-  var blondeHairUris = [`https://api.23andme.com/3/profile/${id}/marker/rs35264875/`, `https://api.23andme.com/3/profile/${id}/marker/rs1129038/`, `https://api.23andme.com/3/profile/${id}/marker/rs7495174/`, `https://api.23andme.com/3/profile/${id}/marker/rs4778138/`];
+  hairUris = [`https://api.23andme.com/3/profile/${id}/marker/rs12913832/`, `https://api.23andme.com/3/profile/${id}/marker/rs28777/`, `https://api.23andme.com/3/profile/${id}/marker/rs1805007/`, `https://api.23andme.com/3/profile/${id}/marker/rs1805008/`, `https://api.23andme.com/3/profile/${id}/marker/rs11547464/`, `https://api.23andme.com/3/profile/${id}/marker/rs35264875/`, `https://api.23andme.com/3/profile/${id}/marker/rs1129038/`, `https://api.23andme.com/3/profile/${id}/marker/rs7495174/`, `https://api.23andme.com/3/profile/${id}/marker/rs4778138/`];
   var curlyHairUris = [`https://api.23andme.com/3/profile/${id}/marker/rs17646946/`, `https://api.23andme.com/3/profile/${id}/marker/rs7349332/`, `https://api.23andme.com/3/profile/${id}/marker/rs11803731/`];
   var frecklesUris = [`https://api.23andme.com/3/profile/${id}/marker/rs1015362/`, `https://api.23andme.com/3/profile/${id}/marker/rs2153271/`]
 
-  rp(geneticWeightReq)
-    .then(function(body) {
-   // change from model_input later
-      sex = body['details']['model_inputs']['sex'];
-      a_ge = body['details']['model_inputs']['age'];
-      model_ethnicity = body['details']['model_inputs']['model_ethnicity'];
-      predicted_bmi = body['summary']['predicted_bmi'];
-
-      // if over half Asian or African, eyes are brown and hair is black. else -->
-      rp(eyeColorReq)
-        .then(function(eyecolorBody) { // determine eye color
-          if ( eyecolorBody['variants'][0]['allele'] == "A" ) {
-            eye_color = 'brown';
-          } else if ( eyecolorBody['variants'][1]['allele']  == "A" ) {
-            eye_color = 'brown';
-          } else {
-            eye_color = 'blue';
-          }
-          console.log(`eye color from Req ${eye_color}`);
-        })
-
-      // black hair ??
-      rp( {
-        uri: blackHairUris[0],
-        headers: {Authorization: 'Bearer ' + token},
-        json: true,
-      }).then(function(blackHair0) {
-        if (blackHair0['variants'][0]['allele'] == "A" && blackHair0['variants'][1]['allele'] == "A" ) {
-          hair_color = 'black';
-        } else {
-        rp( {
-          uri: blackHairUris[1],
-          headers: {Authorization: 'Bearer ' + token},
-          json: true,
-        }).then(function(blackHair1) {
-          if (blackHair0['variants'][0]['allele'] == "C" && blackHair0['variants'][1]['allele'] == "C" ) {
-            hair_color = 'black';
-          }
-          // else --> hair not black
-              });
-
-            }
-          })
-        // if not black, check for red
-      if ( hair_color != 'black') {
-        rp( {
-          uri: redHairUris[0],
-          headers: {Authorization: 'Bearer ' + token},
-          json: true,
-        }).then(function(redHair0) {
-          if (redHair0['variants'][0]['allele'] == "T" && redHair0['variants'][1]['allele'] == "T") {
-            hair_color = 'red';
-          } else {
-            rp( {
-              uri: redHairUris[1],
-              headers: {Authorization: 'Bearer ' + token},
-              json: true,
-            }).then(function(redHair1) {
-              if (redHair1['variants'][0]['allele'] == "T" && redHair1['variants'][1]['allele'] == "T") {
-                hair_color = 'red';
-              } else {
-                rp( {
-                  uri: redHairUris[2],
-                  headers: {Authorization: 'Bearer ' + token},
-                  json: true,
-                }).then (function(redHair2) {
-                  if (redHair2['variants'][0]['allele'] == "A" && redHair2['variants'][1]['allele'] == "A") {
-                    hair_color = 'red';
-                  } // else, hair is not red
-                })
-              }
-            })
-          }
-        })
-      // if not red check for blonde
-      }
-      if (hair_color != 'red' && hair_color != 'black') {
-        rp( {
-          uri: blondeHairUris[0],
-          headers: {Authorization: 'Bearer ' + token},
-          json: true,
-        }).then(function(blondeHair0) {
-          if (blondeHair0['variants'][0]['allele'] == "T" && blondeHair0['variants'][1]['allele'] == "T") {
-            hair_color = 'blonde';
-          } else {
-            rp( {
-              uri: blondeHairUris[1],
-              headers: {Authorization: 'Bearer ' + token},
-              json: true,
-            }).then(function(blondeHair1) {
-              if (blondeHair1['variants'][0]['allele'] == "T" && blondeHair1['variants'][1]['allele'] == "T") {
-                hair_color = 'blonde';
-              } else {
-                rp( {
-                  uri: blondeHairUris[2],
-                  headers: {Authorization: 'Bearer ' + token},
-                  json: true,
-                }).then(function(blondeHair2) {
-                  if (blondeHair2['variants'][0]['allele'] == "A" && blondeHair2['variants'][1]['allele'] == "A") {
-                    hair_color = 'blonde';
-                  } else {
-                    rp( {
-                      uri: blondeHairUris[3],
-                      headers: {Authorization: 'Bearer ' + token},
-                      json: true,
-                    }).then(function(blondeHair3) {
-                      if (blondeHair3['variants'][0]['allele'] == "A" && blondeHair3['variants'][1]['allele'] == "A") {
-                        hair_color = 'blonde';
-                      } else {
-                        hair_color = 'brown';
-                      }
-                    })
-                  }
-                })
-              }
-            })
-          }
-        })
-      }
-    console.log(hair_color);
-    var hair_curl_index = 0;
-    if (hair_curl_index === 0) {
-      rp({
-        uri: curlyHairUris[0],
-        headers: {Authorization: 'Bearer ' + token},
-        json: true,
-      }).then(function(curlyHair0) {
-        if (curlyHair0['variants'][0]['allele'] == "G" && curlyHair0['variants'][1]['allele'] == "G") {
-          hair_curl_index+=2;
-        } else if (curlyHair0['variants'][0]['allele'] == "G" || curlyHair0['variants'][1]['allele'] == "G") {
-          hair_curl_index+=1;
-        } })
-      rp({
-        uri: curlyHairUris[1],
-        headers: {Authorization: 'Bearer ' + token},
-        json: true,
-      }).then(function(curlyHair1) {
-        if (curlyHair1['variants'][0]['allele'] == "T" && curlyHair1['variants'][1]['allele'] == "T") {
-          hair_curl_index+=2;
-        } else if (curlyHair1['variants'][0]['allele'] == "T" || curlyHair1['variants'][1]['allele'] == "T") {
-          hair_curl_index+=1;
-        }})
-      rp({
-        uri: curlyHairUris[2],
-        headers: {Authorization: 'Bearer ' + token},
-        json: true,
-        }).then(function(curlyHair2) {
-          if (curlyHair2['variants'][0]['allele'] == "T" && curlyHair2['variants'][1]['allele'] == "T") {
-            hair_curl_index+=2;
-          } else if (curlyHair2['variants'][0]['allele'] == "T" || curlyHair2['variants'][1]['allele'] == "T") {
-            hair_curl_index+=1;
-          }
-          if (hair_curl_index < 3) {
-            hair_texture = 'straight';
-          } else if (hair_curl_index < 6) {
-            hair_texture = 'wavy';
-          } else {
-            hair_texture = 'curly';
-          }
-          console.log(`hair index ${hair_curl_index}`);
-          console.log(`hair texture ${hair_texture}`);
-        })
-    }
-
-
-
-    var freckling_index = 0;
-    rp({
-      uri: frecklesUris[0],
-      headers: {Authorization: 'Bearer ' + token},
-      json: true,
-    }).then(function(freckles0) {
-      if (freckles0['variants'][0]['allele'] == "T" && freckles0['variants'][1]['allele'] == "T") {
-        freckling_index+=2;
-      } else if ( freckles0['variants'][0]['allele'] == "T" || freckles0['variants'][1]['allele'] == "T" ) {
-        freckling_index+=1;
-      }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  var genWeightOutput = getGeneticWeight(geneticWeightReq).then((data) => {
+    sex = data[0];
+    a_ge = data[1];
+    model_ethnicity = data[2];
+    predicted_bmi = data[3];
+    var eye_color = getEyeColor(eyeColorReq);
+    var freckle_index = getFrecklingIndex(frecklesUris, token);
+    var hair_color = getHair(hairUris, token);
+    var hair_texture = getHairTexture(curlyHairUris, token);
+    return Promise.all([sex, a_ge, model_ethnicity, predicted_bmi, eye_color, hair_color, hair_texture, freckle_index]);
+  }).then(data => {
+    console.log("TESTING", data);
+    var has_freckles = '';
+    if (data[7] > 2) {
+      has_freckles = 'yes';
+    } else { has_freckles = 'no'; }
+    var updatedUser = mongoose.model('updatedUser', UpdatedUserSchema);
+    var newUser = updatedUser({
+          firstname: first_name,
+          lastname: last_name,
+          email: e_mail,
+          acctid: acct_id,
+          gender: data[0],
+          age: data[1],
+          ethnicity:data[2],
+          pred_bmi: data[3],
+          eyecolor: data[4],
+          haircolor: data[5],
+          hairtexture: data[6],
+          freckles: has_freckles
+        });
+      newUser.save();
+      console.log('saved' + newUser);
+  }).catch(function(err) {
+      console.log(err);
+      res.redirect('/error');
     })
-    rp({
-      uri: frecklesUris[1],
-      headers: {Authorization: 'Bearer ' + token},
-      json: true,
-    }).then(function(freckles1) {
-      if (freckles1['variants'][0]['allele'] == "C" && freckles1['variants'][1]['allele'] == "C") {
-        freckling_index+=2;
-      } else if (freckles1['variants'][0]['allele'] == "C" || freckles1['variants'][1]['allele'] == "C") {
-        freckling_index+=1;
-      }
-
-      if ( freckling_index > 2 ) {
-        has_freckles = 'yes';
-      } else {
-        has_freckles = 'no';
-      }
-      console.log(`freckling index ${freckling_index}`);
-      console.log(`freckles ${has_freckles}`);
-      console.log(`output ${sex} ${hair_color} ${eye_color}`);
-    })
-    // .catch(function(err) {
-    //   console.log(err);
-    // })
 
 
-}).then(function(what) {
-  var updatedUser = mongoose.model('updatedUser', UpdatedUserSchema);
-  var newUser = updatedUser({
-      firstname: first_name,
-      lastname: last_name,
-      email: e_mail,
-      acctid: acct_id,
-      gender: sex,
-      age: a_ge,
-      ethnicity: model_ethnicity,
-      pred_bmi: predicted_bmi,
-      eyecolor: eye_color,
-      haircolor: hair_color,
-      hairtexture: hair_texture,
-      freckles: has_freckles
-    });
-  newUser.save();
-  console.log('saved' + newUser);
-})
-}
+};
+
+
+
 
 // get token after user connects their 23andMe acct
 router.get('/callback', (req, res, next) => {
