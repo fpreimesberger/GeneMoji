@@ -1,6 +1,6 @@
 .everything {
   display: grid;
-  grid-template-rows: 60px 40px 300px 40px 400px 40px 150px 40px 300px;
+  grid-template-rows: 60px 40px 550px 40px 400px 40px 150px 40px 300px;
   grid-template-columns: 20% 30% 30% 20%; /* 120px auto auto 120px; */
 }
 body {
@@ -14,6 +14,9 @@ body {
   font-weight: normal;
   font-style: normal;
   font-size: 25px;
+}
+.centered-pic {
+  align-items: center;
 }
 .first-section {
   grid-row: 1;
@@ -36,8 +39,8 @@ body {
 .first-block {
   grid-row: 3;
   grid-column: 2/4;
-  border: 2px darkGray solid;
-  border-radius: 20px;
+  /* border: 2px darkGray solid;
+  border-radius: 20px; */
 }
 .second-block {
   grid-row: 5;
@@ -92,11 +95,11 @@ button {
  background: rgba(0,0,0,0.7);
  text-align:center;
  transition: all 0.2s;
- width: 215px;
- margin-left: 36%;
- margin-right: 36%;
- margin-top: 200px;
- margin-bottom: 0px;
+ width: 240px;
+ margin-left: 35%;
+ margin-right: 35%;
+ margin-top: 10px;
+ margin-bottom: 5px;
  height: 50px;
  -webkit-transition: all 1s ease;
  white-space: nowrap;
@@ -118,8 +121,17 @@ p {
    font-family: 'HankenGroteskRegular';
    font-weight: normal;
    font-style: normal;
-   font-size: 18px;
+   font-size: 16px;
    padding: 10px 30px 10px;
+}
+h4 {
+  font-family: 'HankenGroteskRegular';
+  font-weight: bold;
+  font-style:normal;
+  font-size: 30px;
+  text-align: center;
+  color: #1f1f2e;
+  /* padding: 10px 30px 10px; */
 }
 .contactfont {
   font-family: 'HankenGroteskRegular';

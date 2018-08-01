@@ -57,6 +57,10 @@ router.get('/SNPslist', (req, res, next) => {
   res.render('SNPslist');
 })
 
+router.get('/results', (req, res, next) => {
+  res.render(results);
+})
+
 function retrieveAlleles(inputUri, token) {
   output = '';
   return rp({
@@ -201,6 +205,10 @@ function getFrecklingIndex(frecklesUris, token) {
     return freckling_index;
   })}
 
+function result(req, res, next) {
+  res.render('result');
+}
+
 function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
   var sex = '';
   var a_ge = '';
@@ -258,6 +266,7 @@ function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
         });
       newUser.save();
       console.log('saved' + newUser);
+      router.get('results');
   }).catch(function(err) {
       console.log(err);
       res.redirect('/error');
