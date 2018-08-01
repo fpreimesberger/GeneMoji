@@ -5,7 +5,6 @@ var Bluebird = require('bluebird');
 var request = require('request');
 var rp = require('request-promise');
 const mongoose = require('mongoose');
-var async = require("async");
 const Schema = mongoose.Schema;
 
 const UpdatedUserSchema = new Schema({
@@ -29,8 +28,8 @@ const UpdatedUserSchema = new Schema({
 router.get('/', function(req, res, next) {
   const currentUserId = req.session.userId;
   const currentUsername = req.session.username;
-  console.log("username:");
-  console.log(JSON.stringify(currentUsername));
+  // console.log("username:");
+  // console.log(JSON.stringify(currentUsername));
   res.render('index', { title: 'GeneMoji', currentUserId: currentUserId, currentUsername: currentUsername });
 });
 
@@ -53,6 +52,10 @@ router.post('/login', (req, res, next) => {
     }
   });
 });
+// get SNPslist
+router.get('/SNPslist', (req, res, next) => {
+  res.render('SNPslist');
+})
 
 function retrieveAlleles(inputUri, token) {
   output = '';
@@ -149,7 +152,6 @@ function getHairTexture(curlyHairUris, token) {
   var req1 = retrieveAlleles(curlyHairUris[1], token);
   var req2 = retrieveAlleles(curlyHairUris[2], token);
   return Promise.all([req0, req1, req2]).then(function(res) {
-    console.log(`hair res ${res}`);
     if (res[0][0] == ans[0] && res[0][1] == ans[0]) {
         hair_curl_index+=2;
       } else if (res[0][0] == ans[0] || res[0][1] == ans[0]) {
@@ -167,7 +169,6 @@ function getHairTexture(curlyHairUris, token) {
       }
       return hair_curl_index;
   }).then(data => {
-    console.log(`hair curl index is ${hair_curl_index}`);
     if (hair_curl_index > 2) {
       hairTexture = 'wavy';
     } else {

@@ -6,26 +6,59 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/gauge" type="text/css">
+  <link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/hk-grotesk" type="text/css">
   <link rel='stylesheet' href='../stylesheets/style.css'>
 </head>
 <script src="https://api.23andme.com/res/js/ttam-0.3.js"></script>
 
 <body>
 <div class='everything'>
-  <div class='first-section'>
+    <div class='first-section'>
     <h1>{{title}}</h1>
   </div>
 
-  <div class='second-container'>
     <!-- toggle display depending on logged in or not  -->
+  <div class='second-section'>
+  </div>
+  <div class='first-block'>
     {{# if currentUserId}}
     <p>You're logged in as userID {{currentUserId}}</p> <!-- change to username?? -->
     <a href="https://api.23andme.com/authorize/?redirect_uri=http://localhost:3000/callback&response_type=code&client_id=3643dd20a884fef635d43c85b0dc66d0&scope=basic+email+names+report:all+genomes+ancestry+phenotypes:read:sex&select_profile=True rs123">Connect with 23andMe</a>
     <p>Your 23andMe account is connected as ..</p>
     {{else}}
-    <a href='../users/new'><p>Make an account</p></a>
-    <a href='../login'><p>Login</p></a>
+    <a href='../users/new'><button class='button'>Make an account</button></a>
+    <h3>or <a href='../login'>Login</h3></a>
     {{/if}}
+  </div>
+  <div class='second-block'>
+  </div>
+  <div class='left-second'>
+  </div>
+  <div class='right-second'>
+    <p> &emsp; GeneMoji uses the 23andMe API to retrieve relevant traits and genetic information about you to make an avatar.
+      Selected single nucleotide polymorphisms, or SNPs, are put through an algorithm to determine the most likely physical characteristic.
+      For a full list of traits and SNPs pulled by GeneMoji, click <a href='../SNPslist'>here.</a></p>
+  </div>
+  <div class='third-block'>
+    <p>We take your privacy very seriously...</p>
+  </div>
+  <div class='bottom-block'>
+
+  </div>
+  <div class='left-bottom'>
+    <p class='contactfont'><b>CONTACT</b></p>
+    <p class='contactfont'>fpreimesberger@gmail.com</p>
+    <div class='pics'>
+    <a href="https://www.linkedin.com/in/freya-preimesberger-b1a0aa83/" target='_blank'><img class=" picc" src="https://image.flaticon.com/icons/svg/61/61109.svg" alt="linkedin"></a>
+    <a href="https://github.com/fpreimesberger" target='_blank'><img class="picc" src="https://image.flaticon.com/icons/svg/25/25231.svg" alt="git"></a>
+    <a href="https://twitter.com/freyapreim" target='_blank'><img class="picc" src="https://image.flaticon.com/icons/svg/8/8800.svg" alt="tweet"></a>
+  </div>
+</div>
+  <div class='right-bottom'>
+    <p class='contactfont'>HOW IT WORKS</p>
+    <p class='contactfont'>PRIVACY</p>
+    <p class='contactfont'>LIST OF INFORMATION PULLED</p>
   </div>
 </div>
 </body>
+</html>

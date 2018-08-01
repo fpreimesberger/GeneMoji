@@ -5,9 +5,11 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 require('dotenv').config();
-process.env['NODE_ENV'] = 'production'; // is this okay
-console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
-console.log(process.env.CLIENT_ID);
+// process.env['NODE_ENV'] = 'production'; // is this okay
+// console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+// console.log(process.env.CLIENT_ID);
+
+
 // console.log(process.env.GRANT_TYPE);
 
 var app = express();
@@ -53,7 +55,7 @@ app.use(function(err, req, res, next) {
 const mongoose = require('mongoose');
 const mongoURI = 'mongodb://freya:zipperkeet12@ds147461.mlab.com:47461/genemoji';
 
-mongoose.connect(mongoURI)
+mongoose.connect(mongoURI, { useNewUrlParser: true });
 mongoose.Promise = global.Promise;
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
