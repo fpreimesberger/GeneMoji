@@ -55,6 +55,10 @@ h4 {
   align-items: right;
   vertical-align: right;
 }
+img {
+  height: 450px;
+  width: 450px;
+}
 h3 {
   font-family: 'HankenGroteskRegular';
   font-weight: normal;
@@ -70,4 +74,7 @@ h2 {
   font-style: normal;
   font-size: 35px;
   text-align: center;
+}
+p {
+  margin: 36px 0 0;
 }
