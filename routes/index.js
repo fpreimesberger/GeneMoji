@@ -208,7 +208,14 @@ function getFrecklingIndex(frecklesUris, token) {
     return freckling_index;
   })}
 
+function resRedirect(req, res) {
+  res.redirect('/results');
+}
+
 function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
+  return new Promise((resolve, reject) => {
+
+
   var sex = '';
   var a_ge = '';
   var model_ethnicity = '';
@@ -250,34 +257,16 @@ function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
     if (data[7] > 2) {
       has_freckles = 'yes';
     } else { has_freckles = 'no'; }
-    var updatedUser = mongoose.model('updatedUser', UpdatedUserSchema);
-    var newUser = updatedUser({
-          firstname: first_name,
-          lastname: last_name,
-          email: e_mail,
-          acctid: acct_id,
-          gender: data[0],
-          age: data[1],
-          ethnicity:data[2],
-          pred_bmi: data[3],
-          eyecolor: data[4],
-          haircolor: data[5],
-          hairtexture: data[6],
-          freckles: has_freckles
-        });
-      // newUser.save();
-      // console.log('saved' + newUser);
       console.log(data);
       console.log(JSON.stringify(data));
-      // return JSON.stringify(data);
-      return('fuck');
-      // return [data[0], data[1], data[2], data[3], data[4], data[5], data[6], has_freckles];
-  }).catch(function(err) {
+      resolve(data);
+    }).catch(function(err) {
       console.log(err);
-      res.redirect('/error'); // this redirect does not work
+      reject(err);
+      //res.redirect('/error'); // this redirect does not work
     })
 
-
+  });
 };
 
 
@@ -306,6 +295,7 @@ router.get('/callback', (req, res, next) => {
     console.log('error with code');
   } else {
     console.log('attempting to post for token');
+    var myValue;
     rp(options)
       .then(function(body) {
         console.log('it worked');
@@ -313,27 +303,30 @@ router.get('/callback', (req, res, next) => {
         // res.render('/callback', {token: body.access_token}); // changed from res.redirect
 
       // GET from API -
+
         var getData = {
           uri: 'https://api.23andme.com/3/account/',
           // headers: {Authorization: 'Bearer ' + body.access_token},
           headers: {Authorization: 'Bearer demo_oauth_token'}, // DEMO ONLY
           json: true };
-        var userID = "";
-        rp(getData)
-          .then(function(output) {
-            userID = output['data'][0]['id'];
-            console.log('GET worked');
-            console.log(output['data'][0]['id']);
+        return getData;
+      }).then((data) => {
+        return rp(data);
+      }).then((data)=> {
+        userID = data['data'][0]['id'];
+        console.log('GET worked');
+        console.log(data['data'][0]['id']);
 
-        // getInfo(body.access_token, userID); //What the fuck
+    // getInfo(body.access_token, userID); //What the fuck
         console.log('aquiiiiiiiii');
-        var output = getInfo('demo_oauth_token', 'demo_profile_id', 'Erin', 'Mendel', 'shit@fuck.com', 'demo_profile_id');
-        console.log(output);
-        })
+        return getInfo('demo_oauth_token', 'demo_profile_id', 'Erin', 'Mendel', 'shit@fuck.com', 'demo_profile_id')
+      }).then((data) => {
+        console.log(`ffffffffffff ${data}`);
       }).catch(function(err) {
         console.log(err);
         // res.redirect('/error'); //{error:err}
       });
+
   }
   // res.send
   res.redirect("/results?")//, {data: [0]});
