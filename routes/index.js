@@ -56,10 +56,13 @@ router.post('/login', (req, res, next) => {
 router.get('/SNPslist', (req, res, next) => {
   res.render('SNPslist');
 })
-
+// results
 router.get('/results', (req, res, next) => {
-  res.render(results);
+  res.render('results');
 })
+// function goToResults(req, res) {
+//   res.render('results', req.body);
+// }
 
 function retrieveAlleles(inputUri, token) {
   output = '';
@@ -205,10 +208,6 @@ function getFrecklingIndex(frecklesUris, token) {
     return freckling_index;
   })}
 
-function result(req, res, next) {
-  res.render('result');
-}
-
 function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
   var sex = '';
   var a_ge = '';
@@ -266,10 +265,9 @@ function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
         });
       newUser.save();
       console.log('saved' + newUser);
-      router.get('results');
   }).catch(function(err) {
       console.log(err);
-      res.redirect('/error');
+      res.redirect('/error'); // this does not work
     })
 
 
@@ -316,17 +314,20 @@ router.get('/callback', (req, res, next) => {
         var userID = "";
         rp(getData)
           .then(function(output) {
+            userID = output['data'][0]['id'];
             console.log('GET worked');
+            console.log(output['data'][0]['id']);
 
-        // getInfo(body.access_token, newUser.acctid); What the fuck
+        // getInfo(body.access_token, userID); //What the fuck
         getInfo('demo_oauth_token', 'demo_profile_id', 'Erin', 'Mendel', 'shit@fuck.com', 'demo_profile_id');
         })
-          })
-      .catch(function(err) {
+      }).catch(function(err) {
         console.log(err);
-        res.redirect('/error'); //{error:err}
+        // res.redirect('/error'); //{error:err}
       });
   }
+  res.redirect("/results")//, {data: [0]});
+  // res.post('/results', {data: [0]});
 })
 
 module.exports = router;
