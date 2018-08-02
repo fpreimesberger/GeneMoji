@@ -218,6 +218,8 @@ function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
   var hair_texture = '';
   var has_freckles = '';
 
+  var output;
+
 // REQUESTS
   var geneticWeightReq = {
     uri: `https://api.23andme.com/3/profile/${id}/report/genetic_weight/`, // + id + '/sex/ ',
@@ -263,11 +265,16 @@ function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
           hairtexture: data[6],
           freckles: has_freckles
         });
-      newUser.save();
-      console.log('saved' + newUser);
+      // newUser.save();
+      // console.log('saved' + newUser);
+      console.log(data);
+      console.log(JSON.stringify(data));
+      // return JSON.stringify(data);
+      return('fuck');
+      // return [data[0], data[1], data[2], data[3], data[4], data[5], data[6], has_freckles];
   }).catch(function(err) {
       console.log(err);
-      res.redirect('/error'); // this does not work
+      res.redirect('/error'); // this redirect does not work
     })
 
 
@@ -319,14 +326,17 @@ router.get('/callback', (req, res, next) => {
             console.log(output['data'][0]['id']);
 
         // getInfo(body.access_token, userID); //What the fuck
-        getInfo('demo_oauth_token', 'demo_profile_id', 'Erin', 'Mendel', 'shit@fuck.com', 'demo_profile_id');
+        console.log('aquiiiiiiiii');
+        var output = getInfo('demo_oauth_token', 'demo_profile_id', 'Erin', 'Mendel', 'shit@fuck.com', 'demo_profile_id');
+        console.log(output);
         })
       }).catch(function(err) {
         console.log(err);
         // res.redirect('/error'); //{error:err}
       });
   }
-  res.redirect("/results")//, {data: [0]});
+  // res.send
+  res.redirect("/results?")//, {data: [0]});
   // res.post('/results', {data: [0]});
 })
 

@@ -1,6 +1,6 @@
 .everything {
   display: grid;
-  grid-template-rows: 60px 40px 550px 40px 400px 40px 150px 40px 300px;
+  grid-template-rows: 60px 40px 500px 40px 500px 40px 200px 40px 300px;
   grid-template-columns: 20% 30% 30% 20%; /* 120px auto auto 120px; */
 }
 body {
@@ -28,6 +28,10 @@ body {
   -webkit-box-shadow: 8px 4px 38px 5px rgba(0,0,0,0.25);
   box-shadow: 8px 4px 38px 5px rgba(0,0,0,0.25);
 }
+.navs {
+  grid-row: 1;
+  grid-column: 1/-1;
+}
 .second-section {
   grid-row: 2/9;
   grid-column: 1/-1;
@@ -51,10 +55,12 @@ body {
 .left-second {
   grid-row: 5;
   grid-column: 2/3;
+  margin: 47px 0 5px;
 }
 .right-second {
   grid-row: 5;
   grid-column: 3/4;
+  margin: 47px 0 5px;
 }
 .third-block {
   grid-row: 7;
@@ -68,11 +74,13 @@ body {
   background: linear-gradient(to bottom, #000066 0%, #666699 100%);
 }
 .left-bottom {
+  margin: 30px 0 0;
   grid-row: 9;
   grid-column: 2/3;
   text-align: right;
 }
 .right-bottom {
+  margin: 30px 0 0;
   grid-row: 9;
   grid-column: 3/4;
   text-align: left;
@@ -117,6 +125,14 @@ h1 {
   margin: 10px 10px 5px;
   color: #1f1f2e;
 }
+a {
+  color: #1f1f2e;
+  text-decoration: none;
+}
+a:visited {
+  color: #1f1f2e;
+  text-decoration: none;
+}
 p {
    font-family: 'HankenGroteskRegular';
    font-weight: normal;
@@ -140,7 +156,17 @@ h4 {
   font-size: 15px;
   color: white;
   margin: 0;
-  padding: 30px 50px 0;
+  padding: 30px 25px 0;
+}
+.contactfont-black {
+  font-family: 'HankenGroteskRegular';
+  font-weight: bold;
+  font-style: normal;
+  font-size: 15px;
+  color: #1f1f2e;
+  margin: 0;
+  padding: 32px 40px 0;
+  text-align: right;
 }
 .pics{
   padding: 0 30px 0 0;
@@ -165,6 +191,7 @@ h2 {
   font-family: 'NowRegular';
   font-weight: normal;
   font-style: normal;
-  font-size: 35px;
+  font-size: 25px;
   text-align: center;
+  color: #1f1f2e;
 }
