@@ -322,6 +322,32 @@ router.get('/callback', (req, res, next) => {
         return getInfo('demo_oauth_token', 'demo_profile_id', 'Erin', 'Mendel', 'shit@fuck.com', 'demo_profile_id')
       }).then((data) => {
         console.log(`ffffffffffff ${data}`);
+        // hair query
+        var hairQuery = '';
+        if (data[0] == 'female') {
+          hairQuery = 'LongHair';
+        } else {
+          hairQuery = 'ShortHair';
+        }
+        if (data[6] == 'wavy' && data[0] == 'female') {
+          hairQuery += 'Curvy'
+        } else if (data[0] == 'female') {
+          hairQuery += 'Straight2'
+        } else if (data[6] == 'wavy' && data[0] == 'male') {
+          hairQuery += 'ShortWaved'
+        } else {
+          hairQuery += 'ShortFlat'
+        }
+        // skin query
+        var skinQuery = '';
+        if (data[2] == 'European') {
+          skinQuery = 'Pale';
+        } else {
+          skinQuery = 'Brown'; // defaults to brown if not white fix this later
+        }
+        console.log(`final hair query ${hairQuery}`);
+        console.log(`final skin color ${skinQuery}`);
+        // res.redirect('/results');
       }).catch(function(err) {
         console.log(err);
         // res.redirect('/error'); //{error:err}
@@ -329,7 +355,7 @@ router.get('/callback', (req, res, next) => {
 
   }
   // res.send
-  res.redirect("/results?")//, {data: [0]});
+  // res.redirect("/results?")//, {data: [0]});
   // res.post('/results', {data: [0]});
 })
 
