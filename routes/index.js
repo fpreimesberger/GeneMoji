@@ -322,7 +322,7 @@ router.get('/callback', (req, res, next) => {
         return getInfo('demo_oauth_token', 'demo_profile_id', 'Erin', 'Mendel', 'shit@fuck.com', 'demo_profile_id')
       }).then((data) => {
         console.log(`ffffffffffff ${data}`);
-        // hair query
+        // hair texture query
         var hairQuery = '';
         if (data[0] == 'female') {
           hairQuery = 'LongHair';
@@ -344,6 +344,24 @@ router.get('/callback', (req, res, next) => {
           skinQuery = 'Pale';
         } else {
           skinQuery = 'Brown'; // defaults to brown if not white fix this later
+        }
+        // eye color query
+        var eyeQuery = '';
+        if (data[4] == 'blue') {
+          eyeQuery = 'blue';
+        } else {
+          eyeQuery = 'brown';
+        }
+        // hair color query
+        var hairColorQuery = '';
+        if (data[5] == 'brown') {
+          hairColorQuery = 'Brown';
+        } else if (data[5] == 'blonde') {
+          hairColorQuery = 'Blonde';
+        } else if (data[6] == 'red') {
+          hairColorQuery = 'Red';
+        } else {
+          hairColorQuery = 'Black';
         }
         console.log(`final hair query ${hairQuery}`);
         console.log(`final skin color ${skinQuery}`);
