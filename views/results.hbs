@@ -15,12 +15,17 @@
     </div>
 
     <!-- host avatar; customize based on input-->
+    <!-- https://avataaars.io/?avatarStyle=Transparent&topType"=+{{hairStyle}}+"&accessoriesType=Blank&hairColor="+{{hairColor}}+"&facialHairType=Blank&clotheType=ShirtScoopNeck&clotheColor=Red&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor="+{{skinColor}} -->
     <div class='second-block'>
-      <p style="text-align:center;"><img src='https://avataaars.io/?avatarStyle=Transparent&topType=LongHairFrida&accessoriesType=Blank&facialHairType=Blank&clotheType=ShirtScoopNeck&clotheColor=Red&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light'
-/></p>
+      <p style="text-align:center;"><img id="result_img" src="https://avataaars.io/?avatarStyle=Transparent&topType={{hairStyle}}&accessoriesType=Blank&hairColor={{hairColor}}&facialHairType=Blank&clotheType=ShirtScoopNeck&clotheColor=Red&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor={{skinColor}}" /></p>
     </div>
     <div class='third-block'>
       <h4>Rendered with <b><a href='https://avataaars.com/' target='_blank'>Avataaars</h4></a></b>
     </div>
 </div>
+<script type="text/javascript">
+    // Non-jQuery way
+    document.getElementById( "result_img" ).src = "https://avataaars.io/?avatarStyle=Transparent&topType" + {{hairType}};
+
+</script>
 </body>

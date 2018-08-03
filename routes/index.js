@@ -26,11 +26,7 @@ const UpdatedUserSchema = new Schema({
 
 // landing page
 router.get('/', function(req, res, next) {
-  const currentUserId = req.session.userId;
-  const currentUsername = req.session.username;
-  // console.log("username:");
-  // console.log(JSON.stringify(currentUsername));
-  res.render('index', { title: 'GeneMoji', currentUserId: currentUserId, currentUsername: currentUsername });
+  res.render('index', { title: 'GeneMoji' });
 });
 
 // GET login
@@ -56,9 +52,16 @@ router.post('/login', (req, res, next) => {
 router.get('/SNPslist', (req, res, next) => {
   res.render('SNPslist');
 })
-// results
+// results res.redirect(`/results?hair=${hairQuery}&skin=${skinQuery}&eyecolor=${eyeQuery}&haircolor=${hairColorQuery}&age=${ageQuery}&freckles=${frecklesQuery}`);
+
 router.get('/results', (req, res, next) => {
-  res.render('results');
+  var hairColor = req.query.haircolor;
+  var eyeColor = req.query.eyecolor;
+  var skinColor = req.query.skin;
+  var freckles = req.query.freckles;
+  var age = req.query.age;
+  var hairStyle = req.query.hair;
+  res.render('results', {hairColor: hairColor, eyeColor: eyeColor, skinColor: skinColor, freckles: freckles, age: age, hairStyle: hairStyle});
 })
 // function goToResults(req, res) {
 //   res.render('results', req.body);
@@ -208,9 +211,6 @@ function getFrecklingIndex(frecklesUris, token) {
     return freckling_index;
   })}
 
-function resRedirect(req, res) {
-  res.redirect('/results');
-}
 
 function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
   return new Promise((resolve, reject) => {
@@ -362,10 +362,28 @@ router.get('/callback', (req, res, next) => {
           hairColorQuery = 'Red';
         } else {
           hairColorQuery = 'Black';
+        } // age query for wrinkles
+        var ageQuery = '';
+        if (data[1] > 50) {
+          ageQuery = 'old';
+        } else {
+          ageQuery = 'young';
         }
-        console.log(`final hair query ${hairQuery}`);
+        // freckles query
+        var frecklesQuery = '';
+        if (data[7] > 2) {
+          frecklesQuery = 'freckles';
+        } else {
+          frecklesQuery = 'nofreckles';
+        }
+        console.log(`final hair texture ${hairQuery}`);
         console.log(`final skin color ${skinQuery}`);
-        // res.redirect('/results');
+        console.log(`final eye color ${eyeQuery}`);
+        console.log(`final hair color ${hairColorQuery}`);
+        console.log(`final age ${ageQuery}`);
+        console.log(`final freckles ${frecklesQuery}`);
+        // res.redirect('/results?hair=');
+        res.redirect(`/results?hair=${hairQuery}&skin=${skinQuery}&eyecolor=${eyeQuery}&haircolor=${hairColorQuery}&age=${ageQuery}&freckles=${frecklesQuery}`);
       }).catch(function(err) {
         console.log(err);
         // res.redirect('/error'); //{error:err}
