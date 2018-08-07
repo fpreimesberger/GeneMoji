@@ -1,6 +1,6 @@
 .everything {
   display: grid;
-  grid-template-rows: 60px 40px 525px 40px 480px 40px 170px 40px 280px;
+  grid-template-rows: 60px 40px 525px 40px 520px 40px 150px 40px 280px;
   grid-template-columns: 20% 30% 30% 20%; /* 120px auto auto 120px; */
 }
 body {
@@ -16,7 +16,7 @@ body {
   font-size: 25px;
 }
 .scipic {
-  padding: 32px 50px 0;
+  padding: 70px 50px 0;
 }
 .centered-pic {
   align-items: center;
