@@ -112,6 +112,34 @@ function getEyeColor(eyeColorReq) {
     });
 };
 
+function getEyes8Plex(reqs8plex, token) {
+  var eyeColor = "";
+  var req0 = retrieveAlleles(reqs8plex[0], token); // rs12913832
+  var req1 = retrieveAlleles(reqs8plex[1], token); // rs16891982
+  var req2 = retrieveAlleles(reqs8plex[2], token); // rs12896399
+
+  return Promise.all([req0, req1, req2]).then(function(res) {
+    console.log("hitting 8 plex function");
+    console.log(res);
+    if (res[0][0] == "A" || res[0][1] == "A") { // not blue -> brown or green
+       if (res[1][0] == "C" && res[1][1] == "C") {
+        eyeColor = "green";
+      } else {
+        eyeColor = "brown";
+      }
+    // not brown -> blue or green
+  } else if (res[1][0] == "C" && res[1][1] == "C") {
+      eyeColor = "green";
+    } else if (res[2][0] == "T" && res[2][1] == "T") {
+      eyeColor = "blue";
+    } else { // defaults to brown if fails
+      eyeColor = "brown";
+    }
+  }).then((data) => {
+    return eyeColor;
+  })
+}
+
 function getHair(hairUris, token) {
   var hairFound = false;
   var hairColor = ''; //default
@@ -188,6 +216,10 @@ function getHairTexture(curlyHairUris, token) {
   })
 }
 
+function getSkinTone(skinUris, token) {
+  var skin_tone_index = 0;
+}
+
 function getFrecklingIndex(frecklesUris, token) {
   var freckling_index = 0;
   var has_freckles = '';
@@ -239,6 +271,7 @@ function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
   hairUris = [`https://api.23andme.com/3/profile/${id}/marker/rs12913832/`, `https://api.23andme.com/3/profile/${id}/marker/rs28777/`, `https://api.23andme.com/3/profile/${id}/marker/rs1805007/`, `https://api.23andme.com/3/profile/${id}/marker/rs1805008/`, `https://api.23andme.com/3/profile/${id}/marker/rs11547464/`, `https://api.23andme.com/3/profile/${id}/marker/rs35264875/`, `https://api.23andme.com/3/profile/${id}/marker/rs1129038/`, `https://api.23andme.com/3/profile/${id}/marker/rs7495174/`, `https://api.23andme.com/3/profile/${id}/marker/rs4778138/`];
   var curlyHairUris = [`https://api.23andme.com/3/profile/${id}/marker/rs17646946/`, `https://api.23andme.com/3/profile/${id}/marker/rs7349332/`, `https://api.23andme.com/3/profile/${id}/marker/rs11803731/`];
   var frecklesUris = [`https://api.23andme.com/3/profile/${id}/marker/rs1015362/`, `https://api.23andme.com/3/profile/${id}/marker/rs2153271/`]
+  var uris8plex = [`https://api.23andme.com/3/profile/${id}/marker/rs12913832/`, `https://api.23andme.com/3/profile/${id}/marker/rs16891982/`, `https://api.23andme.com/3/profile/${id}/marker/rs12896399/`];
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   var genWeightOutput = getGeneticWeight(geneticWeightReq).then((data) => {
@@ -246,7 +279,8 @@ function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
     a_ge = data[1];
     model_ethnicity = data[2];
     predicted_bmi = data[3];
-    var eye_color = getEyeColor(eyeColorReq);
+    // var eye_color = getEyeColor(eyeColorReq); // update with 8 plex system
+    var eye_color = getEyes8Plex(uris8plex, token);
     var freckle_index = getFrecklingIndex(frecklesUris, token);
     var hair_color = getHair(hairUris, token);
     var hair_texture = getHairTexture(curlyHairUris, token);
