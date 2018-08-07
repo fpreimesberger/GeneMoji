@@ -119,8 +119,6 @@ function getEyes8Plex(reqs8plex, token) {
   var req2 = retrieveAlleles(reqs8plex[2], token); // rs12896399
 
   return Promise.all([req0, req1, req2]).then(function(res) {
-    console.log("hitting 8 plex function");
-    console.log(res);
     if (res[0][0] == "A" || res[0][1] == "A") { // not blue -> brown or green
        if (res[1][0] == "C" && res[1][1] == "C") {
         eyeColor = "green";
@@ -217,7 +215,32 @@ function getHairTexture(curlyHairUris, token) {
 }
 
 function getSkinTone(skinUris, token) {
-  var skin_tone_index = 0;
+  var skin_tone = "";
+  var req0 = retrieveAlleles(skinUris[0], token); // rs1291382
+  var req1 = retrieveAlleles(skinUris[1], token); // rs16891982
+  var req2 = retrieveAlleles(skinUris[2], token); // rs1426654
+  var req3 = retrieveAlleles(skinUris[3], token); // rs885479
+  var req4 = retrieveAlleles(skinUris[4], token); // rs1426654
+  var req5 = retrieveAlleles(skinUris[5], token); // rs1129038
+
+  return Promise.all([req0, req1, req2, req3, req4, req5]).then(function(res) {
+    console.log(`printing skin color promises ${res}`);
+    if(res[0][0] == "G" && res[0][1] == "G" && res[1][0] == "G" && res[1][1] == "G" && res[2][0] == "A" && res[2][1] == "A") {
+      skin_tone = "Light";
+    } else if (res[3][0] == "A" && res[3][1] == "A") {
+      skin_tone = "Tanned";
+    } else if (res[4][0] == "G" && res[4][1] == "G" && res[5][0] == "G" && res[5][1] == "G") {
+      skin_tone = "DarkBrown";
+    } else {
+      console.log("skin color falls to default");
+      skin_tone = "Tanned";
+    }
+  }).then((data) => {
+    return skin_tone;
+  }).catch(function(err) {
+    console.log(err);
+    return "Brown";
+  })
 }
 
 function getFrecklingIndex(frecklesUris, token) {
@@ -256,6 +279,7 @@ function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
   var hair_color = '';
   var hair_texture = '';
   var has_freckles = '';
+  var skin_color = '';
 
   var output;
 
@@ -272,6 +296,7 @@ function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
   var curlyHairUris = [`https://api.23andme.com/3/profile/${id}/marker/rs17646946/`, `https://api.23andme.com/3/profile/${id}/marker/rs7349332/`, `https://api.23andme.com/3/profile/${id}/marker/rs11803731/`];
   var frecklesUris = [`https://api.23andme.com/3/profile/${id}/marker/rs1015362/`, `https://api.23andme.com/3/profile/${id}/marker/rs2153271/`]
   var uris8plex = [`https://api.23andme.com/3/profile/${id}/marker/rs12913832/`, `https://api.23andme.com/3/profile/${id}/marker/rs16891982/`, `https://api.23andme.com/3/profile/${id}/marker/rs12896399/`];
+  var skinUris = [`https://api.23andme.com/3/profile/${id}/marker/rs12913832/`, `https://api.23andme.com/3/profile/${id}/marker/rs16891982/`, `https://api.23andme.com/3/profile/${id}/marker/rs1426654/`, `https://api.23andme.com/3/profile/${id}/marker/rs885479/`, `https://api.23andme.com/3/profile/${id}/marker/rs1426654/`, `https://api.23andme.com/3/profile/${id}/marker/rs1129038/`];
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   var genWeightOutput = getGeneticWeight(geneticWeightReq).then((data) => {
@@ -284,7 +309,8 @@ function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
     var freckle_index = getFrecklingIndex(frecklesUris, token);
     var hair_color = getHair(hairUris, token);
     var hair_texture = getHairTexture(curlyHairUris, token);
-    return Promise.all([sex, a_ge, model_ethnicity, predicted_bmi, eye_color, hair_color, hair_texture, freckle_index]);
+    var skin_color = getSkinTone(skinUris, token);
+    return Promise.all([sex, a_ge, model_ethnicity, predicted_bmi, eye_color, hair_color, hair_texture, freckle_index, skin_color]);
   }).then(data => {
     console.log("TESTING", data);
     var has_freckles = '';
@@ -374,11 +400,12 @@ router.get('/callback', (req, res, next) => {
         }
         // skin query
         var skinQuery = '';
-        if (data[2] == 'European') {
-          skinQuery = 'Pale';
-        } else {
-          skinQuery = 'Brown'; // defaults to brown if not white fix this later
-        }
+        // if (data[2] == 'European') {
+        //   skinQuery = 'Pale';
+        // } else {
+        //   skinQuery = 'Brown'; // defaults to brown if not white fix this later
+        // }
+        skinQuery = data[8];
         // eye color query
         var eyeQuery = '';
         if (data[4] == 'blue') {
