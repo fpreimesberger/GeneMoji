@@ -64,11 +64,13 @@ router.get('/results', (req, res, next) => {
   var frecklesBool = false;
   var blueEyesBool = false;
   var greenEyesBool = false;
+  var oldBool = false;
   if (freckles == "freckles") { frecklesBool = true; }
   if (eyeColor == "blue") { blueEyesBool = true; }
   if (eyeColor == "green") { greenEyesBool = true; }
+  if (age == 'old') { oldBool = true };
 
-  res.render('results', {hairColor: hairColor, eyeColor: eyeColor, skinColor: skinColor, freckles: freckles, age: age, hairStyle: hairStyle, frecklesBool: frecklesBool, blueEyesBool: blueEyesBool, greenEyesBool: greenEyesBool});
+  res.render('results', {hairColor: hairColor, eyeColor: eyeColor, skinColor: skinColor, freckles: freckles, age: age, hairStyle: hairStyle, frecklesBool: frecklesBool, blueEyesBool: blueEyesBool, greenEyesBool: greenEyesBool, oldBool: oldBool});
 })
 // function goToResults(req, res) {
 //   res.render('results', req.body);

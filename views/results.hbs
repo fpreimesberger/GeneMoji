@@ -40,7 +40,6 @@
   <div class='second-block'>
       <!-- render avatar svg -->
       <p style="text-align:center;"><img id="result_img" src="https://avataaars.io/?avatarStyle=Transparent&topType={{hairStyle}}&accessoriesType=Blank&hairColor={{hairColor}}&facialHairType=Blank&clotheType=ShirtScoopNeck&clotheColor=Red&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor={{skinColor}}" /></p>
-      <!-- overlay freckles if {{freckles}} -->
 
       {{#if frecklesBool }}
         <img style="position:absolute; top:0; left:28.5px;" src="https://i.imgur.com/QLjlOMa.png" alt="freckles" />
@@ -54,6 +53,9 @@
           <img style="position:absolute; top:45px; left:29.5px;" src="https://i.imgur.com/2gnCGK6.png" alt="green eyes" />
       {{/if}}
 
+      {{#if oldBool}}
+        <img style="position:absolute; top:45px; left:28.5px;" src="https://i.imgur.com/R9tiC8Q.png" alt="wrinkles" />
+      {{/if}}
 
       <!-- load img as blob -->
       <!-- <script>
