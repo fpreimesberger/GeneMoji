@@ -43,14 +43,18 @@
       <!-- overlay freckles if {{freckles}} -->
 
       {{#if frecklesBool }}
-        <img style="position:absolute; top:55px; left:430px;" src="https://i.imgur.com/QLjlOMa.png" alt="freckles" />
+        <img style="position:absolute; top:0; left:28.5px;" src="https://i.imgur.com/QLjlOMa.png" alt="freckles" />
+      {{/if}}
+
+      {{#if blueEyesBool}}
+          <img style="position:absolute; top:45px; left:29.5px;" src="https://i.imgur.com/D58U4VS.png" alt="blue eyes" />
+      {{/if}}
+
+      {{#if greenEyesBool}}
+          <img style="position:absolute; top:45px; left:29.5px;" src="https://i.imgur.com/2gnCGK6.png" alt="green eyes" />
       {{/if}}
 
 
-      <!-- <img style="position:absolute; top:55px; left:430px;" src="https://i.imgur.com/QLjlOMa.png" alt="freckles" /> -->
-      <div>
-        <!-- <img src="https://i.imgur.com/YArLPQU.png" alt="freckles" /> -->
-      </div>
       <!-- load img as blob -->
       <!-- <script>
       loadXHR("https://avataaars.io/?avatarStyle=Transparent&topType={{hairStyle}}&accessoriesType=Blank&hairColor={{hairColor}}&facialHairType=Blank&clotheType=ShirtScoopNeck&clotheColor=Red&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor={{skinColor}}").then(function(blob) {

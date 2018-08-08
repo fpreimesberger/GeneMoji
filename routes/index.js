@@ -62,10 +62,13 @@ router.get('/results', (req, res, next) => {
   var age = req.query.age;
   var hairStyle = req.query.hair;
   var frecklesBool = false;
-  if (freckles == "freckles") {
-    frecklesBool = true;
-  }
-  res.render('results', {hairColor: hairColor, eyeColor: eyeColor, skinColor: skinColor, freckles: freckles, age: age, hairStyle: hairStyle, frecklesBool: frecklesBool});
+  var blueEyesBool = false;
+  var greenEyesBool = false;
+  if (freckles == "freckles") { frecklesBool = true; }
+  if (eyeColor == "blue") { blueEyesBool = true; }
+  if (eyeColor == "green") { greenEyesBool = true; }
+
+  res.render('results', {hairColor: hairColor, eyeColor: eyeColor, skinColor: skinColor, freckles: freckles, age: age, hairStyle: hairStyle, frecklesBool: frecklesBool, blueEyesBool: blueEyesBool, greenEyesBool: greenEyesBool});
 })
 // function goToResults(req, res) {
 //   res.render('results', req.body);
@@ -101,7 +104,7 @@ function getGeneticWeight(geneticWeightReq) {
     })
 };
 
-function getEyeColor(eyeColorReq) {
+function getEyeColor(eyeColorReq) { // defunct
   var color = '';
   return rp(eyeColorReq)
     .then(function(eyecolorBody) { // determine eye color
@@ -404,19 +407,14 @@ router.get('/callback', (req, res, next) => {
         }
         // skin query
         var skinQuery = '';
-        // if (data[2] == 'European') {
-        //   skinQuery = 'Pale';
-        // } else {
-        //   skinQuery = 'Brown'; // defaults to brown if not white fix this later
-        // }
         skinQuery = data[8];
         // eye color query
-        var eyeQuery = '';
-        if (data[4] == 'blue') {
-          eyeQuery = 'blue';
-        } else {
-          eyeQuery = 'brown';
-        }
+        var eyeQuery = data[4];
+        // if (data[4] == 'blue') {
+        //   eyeQuery = 'blue';
+        // } else {
+        //   eyeQuery = 'brown';
+        // }
         // hair color query
         var hairColorQuery = '';
         if (data[5] == 'brown') {
