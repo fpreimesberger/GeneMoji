@@ -1,6 +1,6 @@
 .everything {
   display: grid;
-  grid-template-rows: 60px 40px 525px 40px 520px 40px 150px 40px 280px;
+  grid-template-rows: 60px 40px 525px 40px 535px 40px 150px 40px 280px;
   grid-template-columns: 20% 30% 30% 20%; /* 120px auto auto 120px; */
 }
 body {
@@ -16,7 +16,7 @@ body {
   font-size: 25px;
 }
 .scipic {
-  padding: 70px 50px 0;
+  padding: 85px 50px 0;
 }
 .centered-pic {
   align-items: center;
@@ -74,7 +74,7 @@ body {
 .bottom-block {
   grid-row: 9;
   grid-column: 1/-1;
-   background: linear-gradient(to bottom, #128c87 0%, #000066 100%);
+  background: linear-gradient(to bottom, #128c76 0%, #154241 100%);
 }
 .left-bottom {
   margin: 35px 0 0;
