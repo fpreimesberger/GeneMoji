@@ -6,6 +6,29 @@
   <link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/hk-grotesk" type="text/css">
   <link rel='stylesheet' href='../stylesheets/results_style.css'>
   <title>Your Avatar</title>
+
+  <script>
+    function loadXHR(url) {
+      console.log("loadXHR");
+      return new Promise(function(resolve, reject) {
+          try {
+              var xhr = new XMLHttpRequest();
+              xhr.open("GET", url);
+              xhr.responseType = "blob";
+              xhr.onerror = function() {reject("Network error.")};
+              xhr.onload = function() {
+                  if (xhr.status === 200) {resolve(xhr.response)}
+                  else {reject("Loading error:" + xhr.statusText)}
+              };
+              xhr.send();
+          }
+          catch(err) {reject(err.message)}
+          });
+          }
+
+
+  </script>
+
 </head>
 
 <body>
@@ -15,8 +38,29 @@
     </div>
 
   <div class='second-block'>
+      <!-- render avatar svg -->
       <p style="text-align:center;"><img id="result_img" src="https://avataaars.io/?avatarStyle=Transparent&topType={{hairStyle}}&accessoriesType=Blank&hairColor={{hairColor}}&facialHairType=Blank&clotheType=ShirtScoopNeck&clotheColor=Red&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor={{skinColor}}" /></p>
-      <a href="https://avataaars.io/?avatarStyle=Transparent&topType={{hairStyle}}&accessoriesType=Blank&hairColor={{hairColor}}&facialHairType=Blank&clotheType=ShirtScoopNeck&clotheColor=Red&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor={{skinColor}}" download="avatar.svg"><button class='button'>Download image</button></a>
+      <!-- overlay freckles if {{freckles}} -->
+
+      {{#if frecklesBool }}
+        <img style="position:absolute; top:55px; left:430px;" src="https://i.imgur.com/QLjlOMa.png" alt="freckles" />
+      {{/if}}
+
+
+      <!-- <img style="position:absolute; top:55px; left:430px;" src="https://i.imgur.com/QLjlOMa.png" alt="freckles" /> -->
+      <div>
+        <!-- <img src="https://i.imgur.com/YArLPQU.png" alt="freckles" /> -->
+      </div>
+      <!-- load img as blob -->
+      <!-- <script>
+      loadXHR("https://avataaars.io/?avatarStyle=Transparent&topType={{hairStyle}}&accessoriesType=Blank&hairColor={{hairColor}}&facialHairType=Blank&clotheType=ShirtScoopNeck&clotheColor=Red&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor={{skinColor}}").then(function(blob) {
+        console.log('blob ???');
+        console.log(blob);
+        });
+      </script>
+      <p style="text-align:center;"><img id="result_img" src="" /></p> -->
+
+      <a href="https://avataaars.io/?avatarStyle=Transparent&topType={{hairStyle}}&accessoriesType=Blank&hairColor={{hairColor}}&facialHairType=Blank&clotheType=ShirtScoopNeck&clotheColor=Red&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor={{skinColor}}" download ><button class='button'>Open image</button></a>
   </div>
     <div class='third-block'>
       <h4>Rendered with <b><a href='https://avataaars.com/' target='_blank'>Avataaars</h4></a></b>

@@ -180,7 +180,7 @@ h4 {
 .picc {
   height: 25px;
   width: 25px;
-  margin: 25px 15px 0 0;
+  margin: 25px 0 0 15px;
   align-items: right;
   vertical-align: right;
 }

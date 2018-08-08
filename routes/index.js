@@ -61,7 +61,11 @@ router.get('/results', (req, res, next) => {
   var freckles = req.query.freckles;
   var age = req.query.age;
   var hairStyle = req.query.hair;
-  res.render('results', {hairColor: hairColor, eyeColor: eyeColor, skinColor: skinColor, freckles: freckles, age: age, hairStyle: hairStyle});
+  var frecklesBool = false;
+  if (freckles == "freckles") {
+    frecklesBool = true;
+  }
+  res.render('results', {hairColor: hairColor, eyeColor: eyeColor, skinColor: skinColor, freckles: freckles, age: age, hairStyle: hairStyle, frecklesBool: frecklesBool});
 })
 // function goToResults(req, res) {
 //   res.render('results', req.body);
@@ -344,7 +348,7 @@ router.get('/callback', (req, res, next) => {
       'grant_type': 'authorization_code',//process.env.GRANT_TYPE,//'authorization_code',
       'code': req.query.code,
       'redirect_uri': process.env.REDIRECT_URI,
-      'scope': 'basic names email report:all genomes ancestry phenotypes:read:sex'
+      'scope': 'basic names report:all genomes ancestry phenotypes:read:sex'
     },
     json: true,
   };
