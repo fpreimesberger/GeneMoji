@@ -5,12 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 require('dotenv').config();
-// process.env['NODE_ENV'] = 'production'; // is this okay
-// console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
-// console.log(process.env.CLIENT_ID);
-
-
-// console.log(process.env.GRANT_TYPE);
+// process.env['NODE_ENV'] = 'production';
 
 var app = express();
 
@@ -32,8 +27,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 // app.use('/img', express.static(__dirname +'/img'));
 
-
-console.log(process.env.CLIENT_ID)
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
