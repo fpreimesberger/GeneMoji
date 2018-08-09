@@ -350,7 +350,7 @@ router.get('/callback', (req, res, next) => {
             }
             // age query for wrinkles
             var ageQuery = '';
-            if (data[1] > 50) {
+            if (data[1] > 45) {
               ageQuery = 'old';
             } else {
               ageQuery = 'young';
