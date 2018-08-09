@@ -53,7 +53,7 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-// Database setup
+// Database setup - defunct
 const mongoose = require('mongoose');
 const mongoURI = 'mongodb://freya:zipperkeet12@ds147461.mlab.com:47461/genemoji';
 
