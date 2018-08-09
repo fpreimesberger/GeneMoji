@@ -11,6 +11,8 @@
   <script src="/javascripts/html2canvas.js"></script>
   <script src="/javascripts/screenshot.js"></script>
 
+
+
   <script>
   const html2canvas = require('html2canvas');
 
@@ -58,8 +60,26 @@
   </div>
 
     <div class='third-block'>
-      <h4>Rendered with <b><a href='https://avataaars.com/' target='_blank'>Avataaars</h4></a></b>
+      <h4>Rendered with <b><a href='https://avataaars.com/' target='_blank'>Avataaars</a></b></h4>
+      <br/>
+
+      <div id="overlay" style="display:none"></div>
+      <div id="contact"><h4>Was this accurate?</h4></div>
+
+      <div id="contactForm">
+        <form action="mailto:fpreim@utexas.edu" method="post" enctype="text/plain">
+        <textarea placeholder="Comment"></textarea>
+        <input class="formBtn" type="submit" />
+        </form>
+      </div>
     </div>
 
 </div>
+
+<script>
+function myFunction() {
+  var popup = document.getElementById("myPopup");
+  popup.classList.toggle("show");
+  }
+</script>
 </body>

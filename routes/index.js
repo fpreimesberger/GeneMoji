@@ -314,7 +314,9 @@ router.get('/callback', (req, res, next) => {
         rp(getData).then((id_data) => {
           return [id_data, body.access_token];
         }).then((data) => {
-          return getInfo(data[0]['data'][0]['profiles'][0]['id'], data[1]);
+          return getInfo(data[0]['data'][0]['profiles'][0]['id'], data[1]); // REAL
+
+          // return getInfo('demo_profile_id', 'demo_oauth_token');
         }).then((data) => {
             // hair texture query
             var hairQuery = '';
