@@ -56,7 +56,6 @@ function getGeneticWeight(geneticWeightReq) {
     .then(function(body) {
    // change from model_input later
       sex = body['details']['model_inputs']['sex'];
-      console.log(sex);
       a_ge = body['details']['model_inputs']['age'];
       model_ethnicity = body['details']['model_inputs']['model_ethnicity'];
       predicted_bmi = body['summary']['predicted_bmi'];
@@ -74,15 +73,15 @@ function getEyes8Plex(reqs8plex, token) {
 
   return Promise.all([req0, req1, req2]).then(function(res) {
     if (res[0][0] == "A" || res[0][1] == "A") { // not blue -> brown or green
-       if (res[1][0] == "C" && res[1][1] == "C") {
+       if (res[1][0] == "C" || res[1][1] == "C") {
         eyeColor = "green";
       } else {
         eyeColor = "brown";
       }
     // not brown -> blue or green
-  } else if (res[1][0] == "C" && res[1][1] == "C") {
+  } else if (res[1][0] == "C" || res[1][1] == "C") {
       eyeColor = "green";
-    } else if (res[2][0] == "T" && res[2][1] == "T") {
+    } else if (res[2][0] == "T" || res[2][1] == "T") {
       eyeColor = "blue";
     } else { // defaults to brown if fails
       eyeColor = "brown";
@@ -190,15 +189,14 @@ function getSkinTone(skinUris, token) {
   var req5 = retrieveAlleles(skinUris[5], token); // rs1129038
 
   return Promise.all([req0, req1, req2, req3, req4, req5]).then(function(res) {
-    console.log(`printing skin color promises ${res}`);
     if(res[0][0] == "G" && res[0][1] == "G" && res[1][0] == "G" && res[1][1] == "G" && res[2][0] == "A" && res[2][1] == "A") {
-      skin_tone = "Light";
+      skin_tone = "Pale";
     } else if (res[3][0] == "A" && res[3][1] == "A") {
       skin_tone = "Tanned";
     } else if (res[4][0] == "G" && res[4][1] == "G" && res[5][0] == "G" && res[5][1] == "G") {
       skin_tone = "DarkBrown";
     } else {
-      skin_tone = "Tanned";
+      skin_tone = "Light";
     }
   }).then((data) => {
     return skin_tone;
@@ -268,13 +266,10 @@ function getInfo(id, token) {
     var skin_color = getSkinTone(skinUris, token);
     return Promise.all([sex, a_ge, model_ethnicity, predicted_bmi, eye_color, hair_color, hair_texture, freckle_index, skin_color]);
   }).then(data => {
-    console.log("TESTING", data);
     var has_freckles = '';
     if (data[7] > 2) {
       has_freckles = 'yes';
     } else { has_freckles = 'no'; }
-      console.log(data);
-      console.log(JSON.stringify(data));
       resolve(data);
     }).catch(function(err) {
       console.log(err);
@@ -303,14 +298,11 @@ router.get('/callback', (req, res, next) => {
 
 // POST to API with request-promise, receive auth token and redirect
   if (!req.query.code) {
-    console.log('error with code');
+    console.log('error posting for token');
   } else {
-    console.log('attempting to post for token');
     var myValue;
     rp(options)
       .then(function(body) {
-        console.log('it worked');
-        console.log(body.access_token);
 
       // get userId from API
         var getData = {
@@ -318,16 +310,12 @@ router.get('/callback', (req, res, next) => {
           headers: {Authorization: 'Bearer ' + body.access_token},
           // headers: {Authorization: 'Bearer demo_oauth_token'}, // DEMO ONLY
           json: true };
-        // return getData; // returns request
 
         rp(getData).then((id_data) => {
-          console.log(`god pls work user ID ${JSON.stringify(id_data)}`);
           return [id_data, body.access_token];
         }).then((data) => {
-          console.log(data[0]['data'][0]['profiles'][0]['id']);
           return getInfo(data[0]['data'][0]['profiles'][0]['id'], data[1]);
         }).then((data) => {
-          console.log(`user data ${data}`);
             // hair texture query
             var hairQuery = '';
             if (data[0] == 'female') {
@@ -374,95 +362,14 @@ router.get('/callback', (req, res, next) => {
             } else {
               frecklesQuery = 'nofreckles';
             }
-            console.log(`final hair texture ${hairQuery}`);
-            console.log(`final skin color ${skinQuery}`);
-            console.log(`final eye color ${eyeQuery}`);
-            console.log(`final hair color ${hairColorQuery}`);
-            console.log(`final age ${ageQuery}`);
-            console.log(`final freckles ${frecklesQuery}`);
-
             // redirect to results and avatar
             res.redirect(`/results?hair=${hairQuery}&skin=${skinQuery}&eyecolor=${eyeQuery}&haircolor=${hairColorQuery}&age=${ageQuery}&freckles=${frecklesQuery}`);
         }).catch(function(err) {
           console.log(err);
           res.redirect('/error');
         })
-
-
-      // // }).then((data) =>return getInfo(data.access_token, userID); {
-      // //   console.log(`WHYYYYYYYYYYYYYYYYYYYYY ${JSON.stringify(data)}`)
-      // //   return rp(data);
-      // // }).then((data)=> {
-      // //   console.log(`TOKEN BODY@@@@@@@@@@@@@@@@@@@@@ ${JSON.stringify(data)}`)
-      // //   userID = data['data'][0]['id'];
-      // //   console.log(`user ID ${data['data'][0]['id']}`);
-      // //
-      // //   return getInfo(data.access_token, userID); //What the fuck
-      // //   // return getInfo('demo_oauth_token', 'demo_profile_id')
-      // // })
-      // .then((data) => {
-      //   console.log(`user data ${data}`);
-      //   // hair texture query
-      //   var hairQuery = '';
-      //   if (data[0] == 'female') {
-      //     hairQuery = 'LongHair';
-      //   } else {
-      //     hairQuery = 'ShortHair';
-      //   }
-      //   if (data[6] == 'wavy' && data[0] == 'female') {
-      //     hairQuery += 'Curvy'
-      //   } else if (data[0] == 'female') {
-      //     hairQuery += 'Straight2'
-      //   } else if (data[6] == 'wavy' && data[0] == 'male') {
-      //     hairQuery += 'ShortWaved'
-      //   } else {
-      //     hairQuery += 'ShortFlat'
-      //   }
-      //   // skin query
-      //   var skinQuery = '';
-      //   skinQuery = data[8];
-      //   // eye color query
-      //   var eyeQuery = data[4];
-      //   // hair color query
-      //   var hairColorQuery = '';
-      //   if (data[5] == 'brown') {
-      //     hairColorQuery = 'Brown';
-      //   } else if (data[5] == 'blonde') {
-      //     hairColorQuery = 'Blonde';
-      //   } else if (data[6] == 'red') {
-      //     hairColorQuery = 'Red';
-      //   } else {
-      //     hairColorQuery = 'Black';
-      //   }
-      //   // age query for wrinkles
-      //   var ageQuery = '';
-      //   if (data[1] > 50) {
-      //     ageQuery = 'old';
-      //   } else {
-      //     ageQuery = 'young';
-      //   }
-      //   // freckles query
-      //   var frecklesQuery = '';
-      //   if (data[7] > 2) {
-      //     frecklesQuery = 'freckles';
-      //   } else {
-      //     frecklesQuery = 'nofreckles';
-      //   }
-      //   console.log(`final hair texture ${hairQuery}`);
-      //   console.log(`final skin color ${skinQuery}`);
-      //   console.log(`final eye color ${eyeQuery}`);
-      //   console.log(`final hair color ${hairColorQuery}`);
-      //   console.log(`final age ${ageQuery}`);
-      //   console.log(`final freckles ${frecklesQuery}`);
-      //
-      //   // redirect to results and avatar
-      //   res.redirect(`/results?hair=${hairQuery}&skin=${skinQuery}&eyecolor=${eyeQuery}&haircolor=${hairColorQuery}&age=${ageQuery}&freckles=${frecklesQuery}`);
-      // }).catch(function(err) {
-      //   console.log(err);
-      //   res.redirect('/error');
       });
-
-  } // end else st
+  }
 })
 
 module.exports = router;
