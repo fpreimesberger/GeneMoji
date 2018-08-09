@@ -26,11 +26,7 @@ const UpdatedUserSchema = new Schema({
 
 // landing page
 router.get('/', function(req, res, next) {
-  const currentUserId = req.session.userId;
-  const currentUsername = req.session.username;
-  // console.log("username:");
-  // console.log(JSON.stringify(currentUsername));
-  res.render('index', { title: 'GeneMoji', currentUserId: currentUserId, currentUsername: currentUsername });
+  res.render('index', { title: 'GeneMoji' });
 });
 
 // GET login
@@ -56,9 +52,25 @@ router.post('/login', (req, res, next) => {
 router.get('/SNPslist', (req, res, next) => {
   res.render('SNPslist');
 })
-// results
+// results res.redirect(`/results?hair=${hairQuery}&skin=${skinQuery}&eyecolor=${eyeQuery}&haircolor=${hairColorQuery}&age=${ageQuery}&freckles=${frecklesQuery}`);
+
 router.get('/results', (req, res, next) => {
-  res.render('results');
+  var hairColor = req.query.haircolor;
+  var eyeColor = req.query.eyecolor;
+  var skinColor = req.query.skin;
+  var freckles = req.query.freckles;
+  var age = req.query.age;
+  var hairStyle = req.query.hair;
+  var frecklesBool = false;
+  var blueEyesBool = false;
+  var greenEyesBool = false;
+  var oldBool = false;
+  if (freckles == "freckles") { frecklesBool = true; }
+  if (eyeColor == "blue") { blueEyesBool = true; }
+  if (eyeColor == "green") { greenEyesBool = true; }
+  if (age == 'old') { oldBool = true };
+
+  res.render('results', {hairColor: hairColor, eyeColor: eyeColor, skinColor: skinColor, freckles: freckles, age: age, hairStyle: hairStyle, frecklesBool: frecklesBool, blueEyesBool: blueEyesBool, greenEyesBool: greenEyesBool, oldBool: oldBool});
 })
 // function goToResults(req, res) {
 //   res.render('results', req.body);
@@ -94,7 +106,7 @@ function getGeneticWeight(geneticWeightReq) {
     })
 };
 
-function getEyeColor(eyeColorReq) {
+function getEyeColor(eyeColorReq) { // defunct
   var color = '';
   return rp(eyeColorReq)
     .then(function(eyecolorBody) { // determine eye color
@@ -108,6 +120,32 @@ function getEyeColor(eyeColorReq) {
       return color;
     });
 };
+
+function getEyes8Plex(reqs8plex, token) {
+  var eyeColor = "";
+  var req0 = retrieveAlleles(reqs8plex[0], token); // rs12913832
+  var req1 = retrieveAlleles(reqs8plex[1], token); // rs16891982
+  var req2 = retrieveAlleles(reqs8plex[2], token); // rs12896399
+
+  return Promise.all([req0, req1, req2]).then(function(res) {
+    if (res[0][0] == "A" || res[0][1] == "A") { // not blue -> brown or green
+       if (res[1][0] == "C" && res[1][1] == "C") {
+        eyeColor = "green";
+      } else {
+        eyeColor = "brown";
+      }
+    // not brown -> blue or green
+  } else if (res[1][0] == "C" && res[1][1] == "C") {
+      eyeColor = "green";
+    } else if (res[2][0] == "T" && res[2][1] == "T") {
+      eyeColor = "blue";
+    } else { // defaults to brown if fails
+      eyeColor = "brown";
+    }
+  }).then((data) => {
+    return eyeColor;
+  })
+}
 
 function getHair(hairUris, token) {
   var hairFound = false;
@@ -185,6 +223,35 @@ function getHairTexture(curlyHairUris, token) {
   })
 }
 
+function getSkinTone(skinUris, token) {
+  var skin_tone = "";
+  var req0 = retrieveAlleles(skinUris[0], token); // rs1291382
+  var req1 = retrieveAlleles(skinUris[1], token); // rs16891982
+  var req2 = retrieveAlleles(skinUris[2], token); // rs1426654
+  var req3 = retrieveAlleles(skinUris[3], token); // rs885479
+  var req4 = retrieveAlleles(skinUris[4], token); // rs1426654
+  var req5 = retrieveAlleles(skinUris[5], token); // rs1129038
+
+  return Promise.all([req0, req1, req2, req3, req4, req5]).then(function(res) {
+    console.log(`printing skin color promises ${res}`);
+    if(res[0][0] == "G" && res[0][1] == "G" && res[1][0] == "G" && res[1][1] == "G" && res[2][0] == "A" && res[2][1] == "A") {
+      skin_tone = "Light";
+    } else if (res[3][0] == "A" && res[3][1] == "A") {
+      skin_tone = "Tanned";
+    } else if (res[4][0] == "G" && res[4][1] == "G" && res[5][0] == "G" && res[5][1] == "G") {
+      skin_tone = "DarkBrown";
+    } else {
+      console.log("skin color falls to default");
+      skin_tone = "Tanned";
+    }
+  }).then((data) => {
+    return skin_tone;
+  }).catch(function(err) {
+    console.log(err);
+    return "Brown";
+  })
+}
+
 function getFrecklingIndex(frecklesUris, token) {
   var freckling_index = 0;
   var has_freckles = '';
@@ -208,9 +275,6 @@ function getFrecklingIndex(frecklesUris, token) {
     return freckling_index;
   })}
 
-function resRedirect(req, res) {
-  res.redirect('/results');
-}
 
 function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
   return new Promise((resolve, reject) => {
@@ -224,6 +288,7 @@ function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
   var hair_color = '';
   var hair_texture = '';
   var has_freckles = '';
+  var skin_color = '';
 
   var output;
 
@@ -239,6 +304,8 @@ function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
   hairUris = [`https://api.23andme.com/3/profile/${id}/marker/rs12913832/`, `https://api.23andme.com/3/profile/${id}/marker/rs28777/`, `https://api.23andme.com/3/profile/${id}/marker/rs1805007/`, `https://api.23andme.com/3/profile/${id}/marker/rs1805008/`, `https://api.23andme.com/3/profile/${id}/marker/rs11547464/`, `https://api.23andme.com/3/profile/${id}/marker/rs35264875/`, `https://api.23andme.com/3/profile/${id}/marker/rs1129038/`, `https://api.23andme.com/3/profile/${id}/marker/rs7495174/`, `https://api.23andme.com/3/profile/${id}/marker/rs4778138/`];
   var curlyHairUris = [`https://api.23andme.com/3/profile/${id}/marker/rs17646946/`, `https://api.23andme.com/3/profile/${id}/marker/rs7349332/`, `https://api.23andme.com/3/profile/${id}/marker/rs11803731/`];
   var frecklesUris = [`https://api.23andme.com/3/profile/${id}/marker/rs1015362/`, `https://api.23andme.com/3/profile/${id}/marker/rs2153271/`]
+  var uris8plex = [`https://api.23andme.com/3/profile/${id}/marker/rs12913832/`, `https://api.23andme.com/3/profile/${id}/marker/rs16891982/`, `https://api.23andme.com/3/profile/${id}/marker/rs12896399/`];
+  var skinUris = [`https://api.23andme.com/3/profile/${id}/marker/rs12913832/`, `https://api.23andme.com/3/profile/${id}/marker/rs16891982/`, `https://api.23andme.com/3/profile/${id}/marker/rs1426654/`, `https://api.23andme.com/3/profile/${id}/marker/rs885479/`, `https://api.23andme.com/3/profile/${id}/marker/rs1426654/`, `https://api.23andme.com/3/profile/${id}/marker/rs1129038/`];
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   var genWeightOutput = getGeneticWeight(geneticWeightReq).then((data) => {
@@ -246,11 +313,13 @@ function getInfo(token, id, first_name, last_name, e_mail, acct_id) {
     a_ge = data[1];
     model_ethnicity = data[2];
     predicted_bmi = data[3];
-    var eye_color = getEyeColor(eyeColorReq);
+    // var eye_color = getEyeColor(eyeColorReq); // update with 8 plex system
+    var eye_color = getEyes8Plex(uris8plex, token);
     var freckle_index = getFrecklingIndex(frecklesUris, token);
     var hair_color = getHair(hairUris, token);
     var hair_texture = getHairTexture(curlyHairUris, token);
-    return Promise.all([sex, a_ge, model_ethnicity, predicted_bmi, eye_color, hair_color, hair_texture, freckle_index]);
+    var skin_color = getSkinTone(skinUris, token);
+    return Promise.all([sex, a_ge, model_ethnicity, predicted_bmi, eye_color, hair_color, hair_texture, freckle_index, skin_color]);
   }).then(data => {
     console.log("TESTING", data);
     var has_freckles = '';
@@ -284,7 +353,7 @@ router.get('/callback', (req, res, next) => {
       'grant_type': 'authorization_code',//process.env.GRANT_TYPE,//'authorization_code',
       'code': req.query.code,
       'redirect_uri': process.env.REDIRECT_URI,
-      'scope': 'basic names email report:all genomes ancestry phenotypes:read:sex'
+      'scope': 'basic names report:all genomes ancestry phenotypes:read:sex'
     },
     json: true,
   };
@@ -340,18 +409,14 @@ router.get('/callback', (req, res, next) => {
         }
         // skin query
         var skinQuery = '';
-        if (data[2] == 'European') {
-          skinQuery = 'Pale';
-        } else {
-          skinQuery = 'Brown'; // defaults to brown if not white fix this later
-        }
+        skinQuery = data[8];
         // eye color query
-        var eyeQuery = '';
-        if (data[4] == 'blue') {
-          eyeQuery = 'blue';
-        } else {
-          eyeQuery = 'brown';
-        }
+        var eyeQuery = data[4];
+        // if (data[4] == 'blue') {
+        //   eyeQuery = 'blue';
+        // } else {
+        //   eyeQuery = 'brown';
+        // }
         // hair color query
         var hairColorQuery = '';
         if (data[5] == 'brown') {
@@ -362,10 +427,28 @@ router.get('/callback', (req, res, next) => {
           hairColorQuery = 'Red';
         } else {
           hairColorQuery = 'Black';
+        } // age query for wrinkles
+        var ageQuery = '';
+        if (data[1] > 50) {
+          ageQuery = 'old';
+        } else {
+          ageQuery = 'young';
         }
-        console.log(`final hair query ${hairQuery}`);
+        // freckles query
+        var frecklesQuery = '';
+        if (data[7] > 2) {
+          frecklesQuery = 'freckles';
+        } else {
+          frecklesQuery = 'nofreckles';
+        }
+        console.log(`final hair texture ${hairQuery}`);
         console.log(`final skin color ${skinQuery}`);
-        // res.redirect('/results');
+        console.log(`final eye color ${eyeQuery}`);
+        console.log(`final hair color ${hairColorQuery}`);
+        console.log(`final age ${ageQuery}`);
+        console.log(`final freckles ${frecklesQuery}`);
+        // res.redirect('/results?hair=');
+        res.redirect(`/results?hair=${hairQuery}&skin=${skinQuery}&eyecolor=${eyeQuery}&haircolor=${hairColorQuery}&age=${ageQuery}&freckles=${frecklesQuery}`);
       }).catch(function(err) {
         console.log(err);
         // res.redirect('/error'); //{error:err}

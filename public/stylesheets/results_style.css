@@ -1,7 +1,7 @@
 .everything {
   display: grid;
   grid-template-columns: auto 500px auto;
-  grid-template-rows: 60px 500px auto;
+  grid-template-rows: 55px 500px auto;
 }
 body {
   width: 100%;
@@ -19,6 +19,7 @@ body {
   grid-column: 2;
   grid-row: 2;
   border: 2px darkGray solid;
+  position: relative;
 }
 .third-block {
   grid-column: 2;
@@ -105,4 +106,36 @@ h2 {
 }
 p {
   margin: 36px 0 0;
+}
+button {
+    font-family : 'HankenGroteskRegular', sans-serif;
+    font-size: 20px;
+    font-weight: lighter;
+    color: white;
+}
+.button{
+ border:0.1em solid #FFFFFF;
+ border-radius: 5px;
+ margin:0 0.3em 0.3em 0;
+ border-radius:0.05em;
+ box-sizing: border-box;
+ text-decoration:none;
+ font-weight:300;
+ color:#FFFFFF;
+ background: rgba(0,0,0,0.7);
+ text-align:center;
+ transition: all 0.2s;
+ margin-left: 29%;
+ margin-right: 29%;
+ margin-top: 25px;
+ margin-bottom: 5px;
+ height: 35px;
+ width: 200px;
+ -webkit-transition: all 1s ease;
+ white-space: nowrap;
+}
+button:hover{
+ color:#000000;
+ background: rgba(0,0,0,0.9);
+ border-radius: 5px;
 }

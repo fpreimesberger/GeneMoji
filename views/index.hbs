@@ -15,7 +15,8 @@
 <body>
 <div class='everything'>
     <div class='first-section'>
-    <h1>{{title}}</h1>
+    <!-- <h1>{{title}}</h1> -->
+    <img src="https://i.imgur.com/nDV8lHL.png" class="title_img" alt="title_img" height="55" />
   </div>
   <div class='navs'>
     <p class='contactfont-black'> <a href='#howitworks'>HOW IT WORKS</a> &emsp; &emsp; <a href='#bottom'>PRIVACY</a> &emsp; &emsp; <a href='#bottom'>CONTACT</a></p>
@@ -26,33 +27,32 @@
   </div>
   <div class='first-block'>
     <h4>Make a unique avatar based on your DNA</h4>
-    <p style="text-align:center;"><img src='https://i.imgur.com/EFwbbeD.png' alt='coverpic.png'></p>
-    <a href="https://api.23andme.com/authorize/?redirect_uri=http://localhost:3000/callback&response_type=code&client_id=3643dd20a884fef635d43c85b0dc66d0&scope=basic+email+names+report:all+genomes+ancestry+phenotypes:read:sex&select_profile=True rs123"><button class='button'>Connect with 23andMe</button></a>
-    <!-- <p>Your 23andMe account is connected as ..</p> -->
-    <!-- {{# if currentUserId}}
-    <p>You're logged in as userID {{currentUserId}}</p>
-    <a href="https://api.23andme.com/authorize/?redirect_uri=http://localhost:3000/callback&response_type=code&client_id=3643dd20a884fef635d43c85b0dc66d0&scope=basic+email+names+report:all+genomes+ancestry+phenotypes:read:sex&select_profile=True rs123">Connect with 23andMe</a>
-    <p>Your 23andMe account is connected as ..</p>
-    {{else}}
-    <a href='../users/new'><button class='button'>Make an account</button></a>
-    <h3>or <a href='../login'>Login</h3></a>
-    {{/if}} -->
+
+    <p style="text-align:center;"><img src="https://i.imgur.com/IONfpqM.png" alt='coverpic.png'></p>
+    <a href="https://api.23andme.com/authorize/?redirect_uri=http://localhost:3000/callback&response_type=code&client_id=3643dd20a884fef635d43c85b0dc66d0&scope=basic+names+report:all+genomes+ancestry+phenotypes:read:sex&select_profile=True rs123"><button class='button'>Connect with 23andMe</button></a>
+
   </div>
   <div class='second-block' id='howitworks'>
     <h2>How It Works</h2>
   </div>
   <div class='left-second'>
+    <img src="https://i.imgur.com/eSLSK8w.png" alt="some pic" class="scipic" height="400" />
+
   </div>
   <div class='right-second'>
-    <p> &emsp; GeneMoji uses the 23andMe API to retrieve relevant traits and genetic information about you to make an avatar, which is generated through a Sketch library.
-      Selected single nucleotide polymorphisms, or SNPs, are put through an algorithm to predict the most likely physical characteristic.
+    <p> &emsp; Once you've been sequenced by 23andMe, you can securely connect your account to GeneMoji. Relevant traits and genetic information are retrieved to generate an avatar that looks like you.
+      Variations in your DNA called single nucleotide polymorphisms, or SNPs, are pulled and put through an algorithm to predict the most likely physical characteristic. Eye and skin color are predicted with the 8-plex system, while traits like hair color and the presence of freckles are
+      determined by checking for common variants.
       <br/>
       <br/>
-      &emsp; GeneMoji does not pull sensitive information from 23andMe and no data is stored. For a full list of traits and SNPs pulled by GeneMoji, click <b><a href='../SNPslist'>here.</a></b></p>
+      &emsp; After you've connected your account, an avatar is rendered and the image (.png) is available for download.
+      <br/>
+      <br/>
+      &emsp; GeneMoji uses genetic information from 23andMe and no data is stored. For a full list of sources used, permissions needed and traits and SNPs pulled by GeneMoji, click <b><a href='../SNPslist'>here.</a></b></p>
   </div>
   <div class='third-block'>
     <h2>Privacy Statement</h2>
-    <p>We take your privacy very seriously...</p>
+    <p>GeneMoji uses sensitive and personal information. Data will not be stored or shared with anyone.</p>
   </div>
   <div class='bottom-block' id='bottom'>
 
