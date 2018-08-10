@@ -18,6 +18,10 @@ body {
 .scipic {
   padding: 85px 50px 0;
 }
+.reverse {
+  unicode-bidi: bidi-override;
+  direction: rtl;
+}
 .centered-pic {
   align-items: center;
 }
