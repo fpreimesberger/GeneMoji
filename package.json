@@ -7,7 +7,6 @@
   },
   "dependencies": {
     "async": "^2.6.1",
-    "avataaars": "^1.1.0",
     "bcrypt": "^3.0.0",
     "bluebird": "^3.5.1",
     "cookie-parser": "~1.4.3",
@@ -21,6 +20,7 @@
     "mongodb": "^3.1.1",
     "mongoose": "^5.2.5",
     "morgan": "~1.9.0",
+    "nan": "^2.10.0",
     "request": "^2.87.0",
     "request-promise": "^4.2.2"
   }
