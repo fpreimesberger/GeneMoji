@@ -1,4 +1,6 @@
 # GeneMoji
+https://genemoji.herokuapp.com/
+
 GeneMoji is a Node.js app that allows users to connect their 23andMe account once they've been sequenced and then returns an avatar that looks like them based on their DNA.
 
 It accesses traits like age and sex from 23andMe and pulls SNPs to determine other characteristics. Skin and eye color are predicted using the 8-plex system, and other traits like hair color and the presence of freckles are determined by looking at common genetic variants.
