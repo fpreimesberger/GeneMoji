@@ -6,7 +6,7 @@ var rp = require('request-promise');
 
 // landing page
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'GeneMoji' });
+  res.render('index', { title: 'GeneMoji', redirect_uri: process.env.REDIRECT_URI });
 });
 
 // list of data pulled
