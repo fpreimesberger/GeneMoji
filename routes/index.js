@@ -282,14 +282,13 @@ function getInfo(id, token) {
 
 // get token after user connects their 23andMe acct
 router.get('/callback', (req, res, next) => {
- // CHANGE SCOPE
   var options = {
     method: 'POST',
     uri: 'https://api.23andme.com/token/',
     form: {
       'client_id': process.env.CLIENT_ID,
       'client_secret': process.env.CLIENT_SECRET,
-      'grant_type': 'authorization_code',//process.env.GRANT_TYPE,//'authorization_code',
+      'grant_type': 'authorization_code',
       'code': req.query.code,
       'redirect_uri': process.env.REDIRECT_URI,
       'scope': 'basic names report:all genomes ancestry phenotypes:read:sex'
@@ -315,9 +314,9 @@ router.get('/callback', (req, res, next) => {
         rp(getData).then((id_data) => {
           return [id_data, body.access_token];
         }).then((data) => {
-          return getInfo(data[0]['data'][0]['profiles'][0]['id'], data[1]); // REAL
+          return getInfo(data[0]['data'][0]['profiles'][0]['id'], data[1]); 
 
-          // return getInfo('demo_profile_id', 'demo_oauth_token');
+          // return getInfo('demo_profile_id', 'demo_oauth_token'); // DEMO ONLY
         }).then((data) => {
             // hair texture query
             var hairQuery = '';
