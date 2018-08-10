@@ -30,8 +30,9 @@ router.get('/results', (req, res, next) => {
   if (eyeColor == "blue") { blueEyesBool = true; }
   if (eyeColor == "green") { greenEyesBool = true; }
   if (age == 'old') { oldBool = true };
+  var email = process.env.EMAIL;
 
-  res.render('results', {hairColor: hairColor, eyeColor: eyeColor, skinColor: skinColor, freckles: freckles, age: age, hairStyle: hairStyle, frecklesBool: frecklesBool, blueEyesBool: blueEyesBool, greenEyesBool: greenEyesBool, oldBool: oldBool});
+  res.render('results', {hairColor: hairColor, eyeColor: eyeColor, skinColor: skinColor, freckles: freckles, age: age, hairStyle: hairStyle, frecklesBool: frecklesBool, blueEyesBool: blueEyesBool, greenEyesBool: greenEyesBool, oldBool: oldBool, email: email});
 })
 
 // retrieve both alleles for a particular SNP
