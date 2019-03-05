@@ -140,6 +140,14 @@ p {
    font-size: 16px;
    padding: 10px 30px 10px;
 }
+h6 {
+  font-family: 'HankenGroteskRegular';
+  font-weight: bold;
+  font-style: normal;
+  font-size: 16px;
+  padding: 10px 30px 10px;
+  color: darkred;
+}
 h4 {
   font-family: 'HankenGroteskRegular';
   font-weight: bold;
