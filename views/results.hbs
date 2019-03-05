@@ -6,6 +6,25 @@
   <link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/hk-grotesk" type="text/css">
   <link rel='stylesheet' href='../stylesheets/results_style.css'>
   <title>Your Avatar</title>
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"> -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="/javascripts/html2canvas.js"></script>
+  <script src="/javascripts/screenshot.js"></script>
+
+
+
+  <script>
+  const html2canvas = require('html2canvas');
+
+  function screenshot() {
+    console.log("trying to take screenshot...");
+    var elem = document.getElementById("capture");
+    html2canvas( elem ).then(canvas => {
+      var base64Image = canvas.toDataURL("image/png");
+      window.open(base64Image, target="_blank");
+  });
+  }
+  </script>
 </head>
 
 <body>
@@ -14,13 +33,53 @@
       <h3>Results</h3>
     </div>
 
-    <!-- host avatar; customize based on input-->
-    <div class='second-block'>
-      <p style="text-align:center;"><img src='https://avataaars.io/?avatarStyle=Transparent&topType=LongHairFrida&accessoriesType=Blank&facialHairType=Blank&clotheType=ShirtScoopNeck&clotheColor=Red&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light'
-/></p>
-    </div>
+  <div class='second-block' id="capture">
+      <!-- render avatar svg -->
+      <p style="text-align:center;"><img id="result_img" src="https://avataaars.io/?avatarStyle=Transparent&topType={{hairStyle}}&accessoriesType=Blank&hairColor={{hairColor}}&facialHairType=Blank&clotheType=ShirtScoopNeck&clotheColor=Red&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor={{skinColor}}" /></p>
+
+      {{#if frecklesBool }}
+        <img style="position:absolute; top:0; left:28.5px;" src="https://i.imgur.com/QLjlOMa.png" alt="freckles" />
+      {{/if}}
+
+      {{#if blueEyesBool}}
+          <img style="position:absolute; top:45px; left:29.5px;" src="https://i.imgur.com/D58U4VS.png" alt="blue eyes" />
+      {{/if}}
+
+      {{#if greenEyesBool}}
+          <img style="position:absolute; top:45px; left:29.5px;" src="https://i.imgur.com/2gnCGK6.png" alt="green eyes" />
+      {{/if}}
+
+      {{#if oldBool}}
+        <img style="position:absolute; top:45px; left:28.5px;" src="https://i.imgur.com/R9tiC8Q.png" alt="wrinkles" />
+      {{/if}}
+
+
+      <a href="https://avataaars.io/?avatarStyle=Transparent&topType={{hairStyle}}&accessoriesType=Blank&hairColor={{hairColor}}&facialHairType=Blank&clotheType=ShirtScoopNeck&clotheColor=Red&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor={{skinColor}}" download ><button class='button'>Open image</button></a>
+
+      <!-- <button onclick="screenshot()">Take screenshot</button> -->
+  </div>
+
     <div class='third-block'>
-      <h4>Rendered with <b><a href='https://avataaars.com/' target='_blank'>Avataaars</h4></a></b>
+      <h4>Rendered with <b><a href='https://avataaars.com/' target='_blank'>Avataaars</a></b></h4>
+      <br/>
+
+      <div id="overlay" style="display:none"></div>
+      <div id="contact"><h4>Was this accurate?</h4></div>
+
+      <div id="contactForm">
+        <form action="mailto:fpreim@utexas.edu" method="post" enctype="text/plain">
+        <textarea placeholder="Comment"></textarea>
+        <input class="formBtn" type="submit" />
+        </form>
+      </div>
     </div>
+
 </div>
+
+<script>
+function myFunction() {
+  var popup = document.getElementById("myPopup");
+  popup.classList.toggle("show");
+  }
+</script>
 </body>

@@ -15,10 +15,12 @@
     "express": "~4.16.0",
     "express-session": "^1.15.6",
     "hbs": "~4.0.1",
+    "html2canvas": "^1.0.0-alpha.12",
     "http-errors": "~1.6.2",
     "mongodb": "^3.1.1",
     "mongoose": "^5.2.5",
     "morgan": "~1.9.0",
+    "nan": "^2.10.0",
     "request": "^2.87.0",
     "request-promise": "^4.2.2"
   }

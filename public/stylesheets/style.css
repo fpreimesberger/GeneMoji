@@ -1,6 +1,6 @@
 .everything {
   display: grid;
-  grid-template-rows: 60px 40px 500px 40px 500px 40px 200px 40px 300px;
+  grid-template-rows: 60px 40px 525px 40px 535px 40px 150px 40px 280px;
   grid-template-columns: 20% 30% 30% 20%; /* 120px auto auto 120px; */
 }
 body {
@@ -14,6 +14,9 @@ body {
   font-weight: normal;
   font-style: normal;
   font-size: 25px;
+}
+.scipic {
+  padding: 85px 50px 0;
 }
 .centered-pic {
   align-items: center;
@@ -71,16 +74,16 @@ body {
 .bottom-block {
   grid-row: 9;
   grid-column: 1/-1;
-  background: linear-gradient(to bottom, #000066 0%, #666699 100%);
+  background: linear-gradient(to bottom, #128c76 0%, #154241 100%);
 }
 .left-bottom {
-  margin: 30px 0 0;
+  margin: 35px 0 0;
   grid-row: 9;
   grid-column: 2/3;
   text-align: right;
 }
 .right-bottom {
-  margin: 30px 0 0;
+  margin: 35px 0 0;
   grid-row: 9;
   grid-column: 3/4;
   text-align: left;
@@ -106,7 +109,7 @@ button {
  width: 240px;
  margin-left: 35%;
  margin-right: 35%;
- margin-top: 10px;
+ margin-top: 25px;
  margin-bottom: 5px;
  height: 50px;
  -webkit-transition: all 1s ease;
@@ -116,6 +119,9 @@ button:hover{
  color:#000000;
  background: rgba(0,0,0,0.9);
  border-radius: 5px;
+}
+.title_img {
+  padding: 5px 10px 0;
 }
 h1 {
   font-family: 'GaugeRegular';
@@ -138,7 +144,7 @@ p {
    font-weight: normal;
    font-style: normal;
    font-size: 16px;
-   padding: 10px 30px 10px;
+   padding: 5px 30px 5px;
 }
 h6 {
   font-family: 'HankenGroteskRegular';
@@ -182,7 +188,7 @@ h4 {
 .picc {
   height: 25px;
   width: 25px;
-  margin: 25px 15px 0 0;
+  margin: 25px 0 0 15px;
   align-items: right;
   vertical-align: right;
 }
